@@ -1,0 +1,53 @@
+Document Title: Test HTML Document
+
+=== HEADINGS ===
+h1: Test HTML Document
+h2: Features
+h2: Sample Links
+h2: Sample Table
+h2: Sample Image
+
+=== LINKS ===
+Link: Example Website -> https://example.com
+Link: GitHub -> https://github.com
+
+=== METADATA ===
+keywords: test, html, parser
+author: Joshua Salcedo
+description: Test HTML file for parser
+title: Test HTML Document
+
+=== TABLES ===
+Table found with 3 rows
+Name	| Age	| Country	| 
+John Doe	| 30	| USA	| 
+Jane Smith	| 25	| UK	| 
+
+Table as Maps:
+{Country=USA, Age=30, Name=John Doe}
+{Country=UK, Age=25, Name=Jane Smith}
+
+=== IMAGES ===
+Image: test-image.jpg (Alt: Test Image)
+
+=== LISTS ===
+ul with 5 items:
+- Headings
+- Paragraphs
+- Links
+- Lists
+- Tables
+
+=== PARAGRAPHS ===
+This is a test HTML document for the HtmlParser test.
+Here are some sample links:
+
+=== CONTAINER DIV ===
+Container found with 13 child elements
+
+=== ELEMENT EXISTS ===
+Has divs: true
+Has forms: false
+
+=== FULL TEXT CONTENT ===
+Test HTML Document Test HTML Document This is a test HTML document for the HtmlParser test. Features Headings Paragraphs Links Lists Tables Sample Links Here are some sample links: Example Website GitHub Sample Table Name Age Country John Doe 30 USA Jane Smith 25 UK Sample Image

@@ -1,0 +1,185 @@
+=== PACKAGE NAME ===
+io.joshuasalcedo.test
+
+=== CLASS JAVADOC ===
+No class JavaDoc found
+
+=== CLASS COMMENTS ===
+No class comments found
+
+=== CLASS STRUCTURE ===
+File Name: TestSample.java
+Package Name: io.joshuasalcedo.test
+Class Name: for
+Class Type: class
+
+=== METHODS ===
+Found 12 methods:
+
+Method: TestSample
+Access Modifier: 
+Static: false
+Return Type: public
+Parameters: 0
+Method JavaDoc:
+  Description: Default constructor.
+Body preview: {         this.name = "default";         this.count = 0;     }
+
+Method: TestSample
+Access Modifier: 
+Static: false
+Return Type: public
+Parameters: 2
+Parameter list:
+  - String name
+  - int count
+Method JavaDoc:
+  Description: Parameterized constructor.
+*
+  Tags:
+    @param name The name to set
+    @param count The count to set
+Body preview: {         this.name = name;         this.count = count;     }
+
+Method: getName
+Access Modifier: public
+Static: false
+Return Type: String
+Parameters: 0
+Method JavaDoc:
+  Description: Returns the name field.
+*
+  Tags:
+    @return The name field
+Body preview: {         return this.name;     }
+
+Method: setName
+Access Modifier: public
+Static: false
+Return Type: void
+Parameters: 1
+Parameter list:
+  - String name
+Method JavaDoc:
+  Description: Sets the name field.
+*
+  Tags:
+    @param name The new name value
+Body preview: {         this.name = name;     }
+
+Method: getCount
+Access Modifier: public
+Static: false
+Return Type: int
+Parameters: 0
+Method JavaDoc:
+  Description: Returns the count field.
+*
+  Tags:
+    @return The count field
+Body preview: {         return this.count;     }
+
+Method: setCount
+Access Modifier: public
+Static: false
+Return Type: void
+Parameters: 1
+Parameter list:
+  - int count
+Method JavaDoc:
+  Description: Sets the count field.
+*
+  Tags:
+    @param count The new count value
+Body preview: {         this.count = count;     }
+
+Method: processItems
+Access Modifier: public
+Static: false
+Return Type: List<String>
+Parameters: 2
+Parameter list:
+  - List<String> items
+  - String filter
+Method JavaDoc:
+  Description: Processes a list of strings and returns a filtered list.
+*
+  Tags:
+    @param items The list of strings to process
+    @param filter The filter string to apply
+    @return A filtered list of strings
+    @throws IllegalArgumentException If items is null
+Body preview: {         if (items == null) {             throw new IllegalArgumentException("Items list cannot b...
+
+Method: IllegalArgumentException
+Access Modifier: 
+Static: false
+Return Type: new
+Parameters: 1
+Parameter list:
+  - "Items list
+Method JavaDoc:
+  Description: Processes a list of strings and returns a filtered list.
+*
+  Tags:
+    @param items The list of strings to process
+    @param filter The filter string to apply
+    @return A filtered list of strings
+    @throws IllegalArgumentException If items is null
+Body preview: {             if (filter == null || item.contains(filter)) {                 result.add(item);   ...
+
+Method: for
+Access Modifier: 
+Static: false
+Return Type: filter
+Parameters: 1
+Parameter list:
+  - String item
+Body preview: {             if (filter == null || item.contains(filter)) {                 result.add(item);   ...
+
+Method: calculateSum
+Access Modifier: public
+Static: true
+Return Type: int
+Parameters: 1
+Parameter list:
+  - int[] numbers
+Method JavaDoc:
+  Description: Static utility method to calculate the sum of an array of integers.
+*
+  Tags:
+    @param numbers The array of integers to sum
+    @return The sum of all numbers in the array
+Body preview: {         int sum = 0;          // Simple summation         for (int num : numbers) {          ...
+
+Method: for
+Access Modifier: 
+Static: false
+Return Type: summation
+Parameters: 1
+Parameter list:
+  - int num
+Method JavaDoc:
+  Description: Static utility method to calculate the sum of an array of integers.
+*
+  Tags:
+    @param numbers The array of integers to sum
+    @return The sum of all numbers in the array
+Body preview: {             sum += num;         }
+
+Method: helperMethod
+Access Modifier: public
+Static: false
+Return Type: void
+Parameters: 0
+Method JavaDoc:
+  Description: Static utility method to calculate the sum of an array of integers.
+*
+  Tags:
+    @param numbers The array of integers to sum
+    @return The sum of all numbers in the array
+Body preview: {             // This is a helper method in an inner class             System.out.println("Helper ...
+
+=== JAVA FILES IN DIRECTORY ===
+Found 1 Java files:
+TestSample.java
