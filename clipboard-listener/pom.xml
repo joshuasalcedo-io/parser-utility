@@ -95,7 +95,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>io.joshuasalcedo.Main</mainClass>
+                            <mainClass>io.joshuasalcedo.ParserRunner</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

@@ -21,7 +21,7 @@ git config user.email "test@example.com"
 
 # Create initial files
 echo "# Test Repository" > README.md
-echo "public class Main { public static void main(String[] args) { System.out.println(\"Hello World\"); } }" > Main.java
+echo "public class Main { public static void main(String[] args) { System.out.println(\"Hello World\"); } }" > ParserRunner
 echo "dependencies {}" > build.gradle
 mkdir -p src/main/java
 echo "package com.test; public class App { }" > src/main/java/App.java
@@ -57,8 +57,8 @@ git checkout main
 git checkout -b bugfix/issue-123
 
 # Make changes for the bugfix
-echo "// Fixed bug in Main.java" >> Main.java
-git add Main.java
+echo "// Fixed bug in Main.java" >> ParserRunner
+git add ParserRunner
 git commit -m "Fix bug #123"
 
 # Tag the bugfix
