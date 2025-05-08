@@ -31,31 +31,31 @@ fi
 
 # Clean the project
 echo -e "\n${YELLOW}Step 1: Cleaning the project${NC}"
-mvn clean
+mvn clean -P !ossrh
 
 # Validate project
 echo -e "\n${YELLOW}Step 2: Validating project${NC}"
-mvn validate
+mvn validate -P !ossrh
 
 # Compile the project
 echo -e "\n${YELLOW}Step 3: Compiling the project${NC}"
-mvn compile
+mvn compile -P !ossrh
 
 # Run tests
 echo -e "\n${YELLOW}Step 4: Running tests${NC}"
-mvn test
+mvn test -P !ossrh
 
 # Package the project
 echo -e "\n${YELLOW}Step 5: Packaging the project${NC}"
-mvn package
+mvn package -P !ossrh
 
 # Verify the package
 echo -e "\n${YELLOW}Step 6: Verifying the package${NC}"
-mvn verify
+mvn verify -P !ossrh
 
 # Install to local repository
 echo -e "\n${YELLOW}Step 7: Installing to local repository${NC}"
-mvn install
+mvn install -P !ossrh
 
 # Generate site documentation
 echo -e "\n${YELLOW}Step 8: Generating site documentation${NC}"
@@ -64,7 +64,7 @@ echo -e "\n${YELLOW}Step 8: Generating site documentation${NC}"
 # Deploy site to GitHub Wiki
 echo -e "\n${YELLOW}Step 9: Deploying site to GitHub Wiki...${NC}"
 echo -e "${YELLOW}This will push documentation to GitHub repository wiki${NC}"
-    mvn site site:deploy
+    mvn site -P !ossrh
 echo
 
 # Perform a release deploy with all profiles
@@ -80,33 +80,33 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
     # Deploy to Custom Nexus
     echo -e "\n${YELLOW}Deploying to Custom Nexus Repository...${NC}"
     mvn deploy -P nexus
-
-    # Deploy to Maven Central (requires GPG signing)
-    echo -e "\n${YELLOW}Deploying to Maven Central...${NC}"
-    echo -e "${YELLOW}This requires GPG signing and proper OSSRH credentials${NC}"
-    read -p "Proceed with Maven Central deployment? (y/n): " -n 1 -r
-    echo
-    if [[ $REPLY =~ ^[Yy]$ ]]; then
-        mvn deploy -P ossrh
-    else
-        echo -e "${YELLOW}Skipping Maven Central deployment.${NC}"
-    fi
+#
+#    # Deploy to Maven Central (requires GPG signing)
+#    echo -e "\n${YELLOW}Deploying to Maven Central...${NC}"
+#    echo -e "${YELLOW}This requires GPG signing and proper OSSRH credentials${NC}"
+#    read -p "Proceed with Maven Central deployment? (y/n): " -n 1 -r
+#    echo
+#    if [[ $REPLY =~ ^[Yy]$ ]]; then
+#        mvn deploy -P ossrh
+#    else
+#        echo -e "${YELLOW}Skipping Maven Central deployment.${NC}"
+#    fi
 
     # Site deploy to GitHub Pages (redundant but included for completeness)
-    echo -e "\n${YELLOW}Running complete site-deploy goal...${NC}"
-    mvn site-deploy
+    echo -e "\n${YELLOW}Running complete site goal...${NC}"
+    mvn site -P !ossrh
 else
     echo -e "${YELLOW}Skipping deployment process.${NC}"
 fi
 
 # Run all reporting plugins
 echo -e "\n${YELLOW}Step 11: Running reporting plugins${NC}"
-mvn site
+mvn site -P !ossrh
 
 # Dependency analysis
 echo -e "\n${YELLOW}Step 12: Analyzing dependencies${NC}"
-mvn dependency:analyze
-mvn dependency:tree
+mvn dependency:analyze -P !ossrh
+mvn dependency:tree -P !ossrh
 
 # Run various project info reports
 echo -e "\n${YELLOW}Step 13: Generating project info reports${NC}"

@@ -210,6 +210,9 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-site-plugin</artifactId>
                 <version>3.12.1</version>
+                <configuration>
+                    <skipDeploy>true</skipDeploy>
+                </configuration>
                 <dependencies>
                     <dependency>
                         <groupId>org.apache.maven.doxia</groupId>
@@ -323,6 +326,15 @@
             </distributionManagement>
         </profile>
     </profiles>
+
+    <!-- Main distribution management section -->
+    <distributionManagement>
+        <site>
+            <id>github</id>
+            <name>GitHub Wiki</name>
+            <url>scp://github.com/joshuasalcedo-io/parser-utility/wiki</url>
+        </site>
+    </distributionManagement>
 
 
 

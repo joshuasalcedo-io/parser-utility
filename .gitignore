@@ -4,3 +4,5 @@ deploy.sh
 
 joshua_public_key.asc
 joshua_secret_key.asc
+
+.parsed
