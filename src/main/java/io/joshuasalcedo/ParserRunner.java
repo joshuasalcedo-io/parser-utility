@@ -3,6 +3,8 @@ package io.joshuasalcedo;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import io.joshuasalcedo.parsers.Parser;
+import io.joshuasalcedo.utility.FileUtils;
+import io.joshuasalcedo.utility.JsonUtils;
 import io.joshuasalcedo.utility.console.ConsoleFormatterFactory;
 import io.joshuasalcedo.utility.console.MessageType;
 
@@ -132,8 +134,8 @@ public class ParserRunner {
      * @return true if directory is valid, false otherwise
      */
     private static boolean validateDirectory(File directory) {
-        if (!directory.exists() || !directory.isDirectory()) {
-            printError("Directory does not exist: " + directory);
+        if (!FileUtils.isFileReadable(directory) || !directory.isDirectory()) {
+            printError("Directory does not exist or is not readable: " + directory);
             return false;
         }
         return true;
@@ -146,8 +148,8 @@ public class ParserRunner {
      */
     private static void parseFile(String filePath) {
         File file = new File(filePath);
-        if (!file.exists()) {
-            printError("File does not exist: " + filePath);
+        if (!FileUtils.isFileReadable(file)) {
+            printError("File does not exist or is not readable: " + filePath);
             return;
         }
 
@@ -191,8 +193,8 @@ public class ParserRunner {
      * @return The path to the saved JSON file
      */
     private static String saveResultToJsonFile(Map<String, Object> result, String directory, String parserType) {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        String json = gson.toJson(result);
+        // Use JsonUtils to convert the result to pretty JSON
+        String json = JsonUtils.toPrettyJson(result);
 
         // Create output filename
         String filename = String.format("parser_%s.json", parserType);
@@ -215,7 +217,7 @@ public class ParserRunner {
 
         // Create the directory if it doesn't exist
         if (!parsedDir.exists()) {
-            if (!parsedDir.mkdir()) {
+            if (!FileUtils.createDirectoriesForFile(new File(parsedDir, "dummy.txt"))) {
                 printWarning("Failed to create .parsed directory. Using current directory instead.");
                 parsedDir = currentDirectory;
             }
@@ -235,8 +237,8 @@ public class ParserRunner {
     private static String writeJsonToFile(String json, File directory, String filename) {
         File outputFile = new File(directory, filename);
 
-        try (FileWriter writer = new FileWriter(outputFile)) {
-            writer.write(json);
+        try {
+            FileUtils.writeStringToFile(outputFile, json);
             return outputFile.getAbsolutePath();
         } catch (IOException e) {
             printError("Error saving JSON to file: " + e.getMessage());
@@ -244,10 +246,8 @@ public class ParserRunner {
             // Fallback to saving in the current directory
             try {
                 outputFile = new File(filename);
-                try (FileWriter writer = new FileWriter(outputFile)) {
-                    writer.write(json);
-                    return outputFile.getAbsolutePath();
-                }
+                FileUtils.writeStringToFile(outputFile, json);
+                return outputFile.getAbsolutePath();
             } catch (IOException ex) {
                 printError("Failed to save JSON file in fallback location: " + ex.getMessage());
                 return null;
@@ -262,8 +262,8 @@ public class ParserRunner {
      * @param outputPath The path where results were saved
      */
     private static void outputResult(Map<String, Object> result, String outputPath) {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        String json = gson.toJson(result);
+        // Use JsonUtils to convert the result to pretty JSON
+        String json = JsonUtils.toPrettyJson(result);
 
         // Print the results to console
         printSuccess("Results:");

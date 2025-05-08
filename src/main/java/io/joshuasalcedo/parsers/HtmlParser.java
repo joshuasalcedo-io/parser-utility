@@ -13,6 +13,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
+import io.joshuasalcedo.utility.FileUtils;
+import io.joshuasalcedo.utility.JsonUtils;
 
 /**
  * Utility class for parsing HTML documents using JSoup.
@@ -44,7 +46,8 @@ public final class HtmlParser {
      * @throws IOException If an IO error occurs
      */
     public static Document parse(File file, String charset, String baseUri) throws IOException {
-        return Jsoup.parse(file, charset, baseUri);
+        String content = FileUtils.readFileAsString(file);
+        return Jsoup.parse(content, baseUri);
     }
 
     /**
@@ -56,7 +59,7 @@ public final class HtmlParser {
      * @throws IOException If an IO error occurs
      */
     public static Document parse(Path path, String baseUri) throws IOException {
-        String html = Files.readString(path, StandardCharsets.UTF_8);
+        String html = FileUtils.readFileAsString(path.toFile());
         return parse(html, baseUri);
     }
 
@@ -427,4 +430,62 @@ public final class HtmlParser {
         return element != null ? element.attr(attribute) : "";
     }
 
+    /**
+     * Convert metadata to JSON.
+     *
+     * @param document The JSoup Document
+     * @return JSON representation of the metadata
+     */
+    public static String metadataToJson(Document document) {
+        Map<String, String> metadata = getMetadata(document);
+        return JsonUtils.toPrettyJson(metadata);
+    }
+
+    /**
+     * Convert table to JSON.
+     *
+     * @param table The JSoup table Element
+     * @return JSON representation of the table
+     */
+    public static String tableToJson(Element table) {
+        String[][] tableArray = tableToArray(table);
+        return JsonUtils.toPrettyJson(tableArray);
+    }
+
+    /**
+     * Convert table to JSON as an array of maps.
+     *
+     * @param table The JSoup table Element
+     * @return JSON representation of the table as an array of maps
+     */
+    public static String tableToMapsJson(Element table) {
+        Map<String, String>[] maps = tableToMaps(table);
+        return JsonUtils.toPrettyJson(maps);
+    }
+
+    /**
+     * Convert structured data to JSON.
+     *
+     * @param document          The JSoup Document
+     * @param containerSelector CSS selector for the container elements
+     * @param fieldSelectors    Map of field names to relative CSS selectors within each container
+     * @return JSON representation of the structured data
+     */
+    public static String structuredDataToJson(Document document, String containerSelector, Map<String, String> fieldSelectors) {
+        Map<String, String>[] data = extractStructuredData(document, containerSelector, fieldSelectors);
+        return JsonUtils.toPrettyJson(data);
+    }
+
+    /**
+     * Convert extracted data to JSON.
+     *
+     * @param document   The JSoup Document
+     * @param selector   CSS selector to find elements
+     * @param attributes List of attributes to extract from each element
+     * @return JSON representation of the extracted data
+     */
+    public static String extractDataToJson(Document document, String selector, String... attributes) {
+        String[][] data = extractData(document, selector, attributes);
+        return JsonUtils.toPrettyJson(data);
+    }
 }

@@ -1,0 +1,6 @@
+feat: Add comprehensive README and GitHub Packages deployment
+
+- Created a detailed README.md with usage instructions, examples, and features
+- Configured pom.xml for GitHub Packages deployment
+- Added GitHub Packages deployment instructions to README
+- Updated SCM URLs to point to correct GitHub repository

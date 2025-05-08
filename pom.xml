@@ -152,28 +152,28 @@
         </repository>
     </distributionManagement>
 
-<!--    <profiles>-->
-<!--        <profile>-->
-<!--            <id>github</id>-->
-<!--            <distributionManagement>-->
-<!--                <repository>-->
-<!--                    <id>github</id>-->
-<!--                    <name>GitHub Packages</name>-->
-<!--                    <url>https://maven.pkg.github.com/joshuasalcedo/parser-utility</url>-->
-<!--                </repository>-->
-<!--                <snapshotRepository>-->
-<!--                    <id>github</id>-->
-<!--                    <name>GitHub Packages</name>-->
-<!--                    <url>https://maven.pkg.github.com/joshuasalcedo/parser-utility</url>-->
-<!--                </snapshotRepository>-->
-<!--            </distributionManagement>-->
-<!--        </profile>-->
-<!--    </profiles>-->
+    <profiles>
+        <profile>
+            <id>github</id>
+            <distributionManagement>
+                <repository>
+                    <id>github</id>
+                    <name>GitHub Packages</name>
+                    <url>https://maven.pkg.github.com/joshuasalcedo-io/parser-utility</url>
+                </repository>
+                <snapshotRepository>
+                    <id>github</id>
+                    <name>GitHub Packages</name>
+                    <url>https://maven.pkg.github.com/joshuasalcedo-io/parser-utility</url>
+                </snapshotRepository>
+            </distributionManagement>
+        </profile>
+    </profiles>
 
     <scm>
-        <connection>scm:git:https://github.com/joshuasalcedo/parser-utility.git</connection>
-        <developerConnection>scm:git:https://github.com/joshuasalcedo/parser-utility.git</developerConnection>
-        <url>https://github.com/joshuasalcedo/parser-utility</url>
+        <connection>scm:git:https://github.com/joshuasalcedo-io/parser-utility.git</connection>
+        <developerConnection>scm:git:https://github.com/joshuasalcedo-io/parser-utility.git</developerConnection>
+        <url>https://github.com/joshuasalcedo-io/parser-utility</url>
         <tag>HEAD</tag>
     </scm>
 

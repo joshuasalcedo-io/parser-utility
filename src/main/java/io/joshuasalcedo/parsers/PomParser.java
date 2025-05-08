@@ -1,18 +1,19 @@
 package io.joshuasalcedo.parsers;
 
+import io.joshuasalcedo.model.maven.PomCoordinates;
+import io.joshuasalcedo.utility.FileUtils;
+import io.joshuasalcedo.utility.JsonUtils;
+import org.apache.maven.api.model.Dependency;
+import org.apache.maven.api.model.Model;
+import org.apache.maven.api.model.Parent;
+import org.apache.maven.api.model.Plugin;
+import org.apache.maven.model.v4.MavenStaxReader;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-
-import io.joshuasalcedo.model.maven.PomCoordinates;
-import org.apache.maven.api.model.Model;
-import org.apache.maven.api.model.Dependency;
-import org.apache.maven.api.model.Parent;
-import org.apache.maven.api.model.Plugin;
-import org.apache.maven.model.v4.MavenStaxReader;
 
 /**
  * Utility class for parsing Maven POM (pom.xml) files using the official Maven Model API.
@@ -141,27 +142,76 @@ public final class PomParser {
      * @return List of POM files
      */
     public static List<File> findPomFiles(File directory) {
-        List<File> pomFiles = new ArrayList<>();
-        findPomFilesRecursive(directory, pomFiles);
-        return pomFiles;
+        try {
+            // Use FileUtils to find all files named "pom.xml"
+            return FileUtils.listFilesMatching(
+                directory.getAbsolutePath(), 
+                false, 
+                file -> file.getName().equals("pom.xml")
+            );
+        } catch (IOException e) {
+            System.err.println("Error finding POM files: " + e.getMessage());
+            return new ArrayList<>();
+        }
     }
 
     /**
-     * Recursive helper method to find all POM files.
-     * 
-     * @param directory The directory to search
-     * @param pomFiles List to collect POM files
+     * Convert a POM Model to JSON.
+     *
+     * @param model The Maven Model object
+     * @return JSON representation of the model
      */
-    private static void findPomFilesRecursive(File directory, List<File> pomFiles) {
-        File[] files = directory.listFiles();
-        if (files != null) {
-            for (File file : files) {
-                if (file.isDirectory()) {
-                    findPomFilesRecursive(file, pomFiles);
-                } else if (file.getName().equals("pom.xml")) {
-                    pomFiles.add(file);
-                }
-            }
-        }
+    public static String modelToJson(Model model) {
+        return JsonUtils.toPrettyJson(model);
+    }
+
+    /**
+     * Convert POM coordinates to JSON.
+     *
+     * @param coordinates The PomCoordinates object
+     * @return JSON representation of the coordinates
+     */
+    public static String coordinatesToJson(PomCoordinates coordinates) {
+        return JsonUtils.toPrettyJson(coordinates);
+    }
+
+    /**
+     * Convert a list of dependencies to JSON.
+     *
+     * @param dependencies The list of dependencies
+     * @return JSON representation of the dependencies
+     */
+    public static String dependenciesToJson(List<Dependency> dependencies) {
+        return JsonUtils.toPrettyJson(dependencies);
+    }
+
+    /**
+     * Convert parent POM information to JSON.
+     *
+     * @param parent The Parent object
+     * @return JSON representation of the parent information
+     */
+    public static String parentToJson(Parent parent) {
+        return JsonUtils.toPrettyJson(parent);
+    }
+
+    /**
+     * Convert a list of plugins to JSON.
+     *
+     * @param plugins The list of plugins
+     * @return JSON representation of the plugins
+     */
+    public static String pluginsToJson(List<Plugin> plugins) {
+        return JsonUtils.toPrettyJson(plugins);
+    }
+
+    /**
+     * Convert a list of modules to JSON.
+     *
+     * @param modules The list of module names
+     * @return JSON representation of the modules
+     */
+    public static String modulesToJson(List<String> modules) {
+        return JsonUtils.toPrettyJson(modules);
     }
 }

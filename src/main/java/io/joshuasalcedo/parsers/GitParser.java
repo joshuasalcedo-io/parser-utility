@@ -26,13 +26,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 /**
@@ -805,7 +803,7 @@ public final class GitParser {
      *
      * @param repoPath The path to the Git repository
      * @param filePath The path to the file within the repository
-     * @return String representing blame information
+     * @return String representing blame information in JSON format
      * @throws IOException If any I/O errors occur
      * @throws GitAPIException If any Git API errors occur
      */
@@ -818,7 +816,8 @@ public final class GitParser {
                     .setFilePath(filePath)
                     .call();
 
-            StringBuilder result = new StringBuilder();
+            List<Map<String, Object>> blameLines = new ArrayList<>();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
             int lineCount = blameResult.getResultContents().size();
             for (int i = 0; i < lineCount; i++) {
@@ -827,14 +826,20 @@ public final class GitParser {
                 String shortCommitId = commit.getName().substring(0, 7);
                 String line = blameResult.getResultContents().getString(i);
 
-                result.append(String.format("%s (%s - %s): %s\n",
-                        shortCommitId,
-                        author.getName(),
-                        new SimpleDateFormat("yyyy-MM-dd").format(author.getWhen()),
-                        line));
+                Map<String, Object> blameLine = new HashMap<>();
+                blameLine.put("lineNumber", i + 1);
+                blameLine.put("commitId", shortCommitId);
+                blameLine.put("fullCommitId", commit.getName());
+                blameLine.put("author", author.getName());
+                blameLine.put("email", author.getEmailAddress());
+                blameLine.put("date", dateFormat.format(author.getWhen()));
+                blameLine.put("content", line);
+
+                blameLines.add(blameLine);
             }
 
-            return result.toString();
+            // Use JsonUtils to convert to pretty JSON
+            return io.joshuasalcedo.utility.JsonUtils.toPrettyJson(blameLines);
         }
     }
 
@@ -1082,54 +1087,40 @@ public final class GitParser {
             Repository repository = git.getRepository();
 
             Iterable<RevCommit> commits = git.log().setMaxCount(maxCount).call();
-            StringBuilder log = new StringBuilder();
+            List<Map<String, Object>> commitLogs = new ArrayList<>();
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
             for (RevCommit commit : commits) {
                 PersonIdent author = commit.getAuthorIdent();
+                Map<String, Object> commitLog = new HashMap<>();
 
-                log.append("Commit: ").append(commit.getName()).append("\n");
-                log.append("Author: ").append(author.getName())
-                        .append(" <").append(author.getEmailAddress()).append(">\n");
-                log.append("Date:   ").append(dateFormat.format(author.getWhen())).append("\n\n");
-                log.append("    ").append(commit.getFullMessage().replace("\n", "\n    ")).append("\n\n");
+                commitLog.put("id", commit.getName());
+                commitLog.put("author", author.getName());
+                commitLog.put("email", author.getEmailAddress());
+                commitLog.put("date", dateFormat.format(author.getWhen()));
+                commitLog.put("message", commit.getFullMessage());
 
                 // Add file changes if not the first commit
                 if (commit.getParentCount() > 0) {
                     List<FileChange> changes = getFileChanges(commit, repository);
 
                     if (!changes.isEmpty()) {
-                        log.append("    Changed files:\n");
+                        List<Map<String, String>> fileChanges = new ArrayList<>();
                         for (FileChange change : changes) {
-                            String prefix = "";
-                            switch (change.getType()) {
-                                case ADD:
-                                    prefix = "A";
-                                    break;
-                                case MODIFY:
-                                    prefix = "M";
-                                    break;
-                                case DELETE:
-                                    prefix = "D";
-                                    break;
-                                case RENAME:
-                                    prefix = "R";
-                                    break;
-                                case COPY:
-                                    prefix = "C";
-                                    break;
-                            }
-
-                            log.append("      ").append(prefix).append(" ").append(change.getPath()).append("\n");
+                            Map<String, String> fileChange = new HashMap<>();
+                            fileChange.put("type", change.getType().toString());
+                            fileChange.put("path", change.getPath());
+                            fileChanges.add(fileChange);
                         }
-                        log.append("\n");
+                        commitLog.put("changes", fileChanges);
                     }
                 }
 
-                log.append("-------------------------------------------------------------------------------\n\n");
+                commitLogs.add(commitLog);
             }
 
-            return log.toString();
+            // Use JsonUtils to convert to pretty JSON with fully qualified class name
+            return io.joshuasalcedo.utility.JsonUtils.toPrettyJson(commitLogs);
         }
     }
 
@@ -1169,6 +1160,7 @@ public final class GitParser {
     public static List<File> listFilesRespectingGitignore(String directory) throws IOException {
         Path dirPath = Paths.get(directory);
         File gitignoreFile = new File(directory, ".gitignore");
+        File dirFile = new File(directory);
 
         // List to store ignore patterns
         List<String> ignorePatterns = new ArrayList<>();
@@ -1176,7 +1168,10 @@ public final class GitParser {
         // Load .gitignore patterns if the file exists
         if (gitignoreFile.exists() && gitignoreFile.isFile()) {
             try {
-                List<String> lines = Files.readAllLines(gitignoreFile.toPath(), StandardCharsets.UTF_8);
+                // Use FileUtils to read the file
+                String gitignoreContent = io.joshuasalcedo.utility.FileUtils.readFileAsString(gitignoreFile);
+                String[] lines = gitignoreContent.split("\\r?\\n");
+
                 for (String line : lines) {
                     // Skip empty lines and comments
                     if (line.trim().isEmpty() || line.startsWith("#")) {
@@ -1190,30 +1185,27 @@ public final class GitParser {
             }
         }
 
+        // Use FileUtils to list all files (without respecting gitignore since we're handling that manually)
+        List<File> allFiles = io.joshuasalcedo.utility.FileUtils.listAllFiles(directory, false);
         List<File> result = new ArrayList<>();
 
-        // Walk the directory tree
-        try (Stream<Path> paths = Files.walk(dirPath)) {
-            paths.filter(Files::isRegularFile)
-                 .forEach(path -> {
-                     // Get the relative path from the base directory
-                     Path relativePath = dirPath.relativize(path);
-                     String pathStr = relativePath.toString().replace('\\', '/');
+        for (File file : allFiles) {
+            // Get the relative path from the base directory
+            String pathStr = io.joshuasalcedo.utility.FileUtils.getRelativePath(file, dirFile).replace('\\', '/');
 
-                     // Check if the file matches any ignore pattern
-                     boolean isIgnored = false;
-                     for (String pattern : ignorePatterns) {
-                         if (matchesGitignorePattern(pathStr, pattern)) {
-                             isIgnored = true;
-                             break;
-                         }
-                     }
+            // Check if the file matches any ignore pattern
+            boolean isIgnored = false;
+            for (String pattern : ignorePatterns) {
+                if (matchesGitignorePattern(pathStr, pattern)) {
+                    isIgnored = true;
+                    break;
+                }
+            }
 
-                     // Add the file to the result if it's not ignored
-                     if (!isIgnored) {
-                         result.add(path.toFile());
-                     }
-                 });
+            // Add the file to the result if it's not ignored
+            if (!isIgnored) {
+                result.add(file);
+            }
         }
 
         return result;

@@ -1,21 +1,20 @@
 package io.joshuasalcedo.parsers;
 
 import io.joshuasalcedo.model.markdown.*;
+import org.commonmark.ext.autolink.AutolinkExtension;
+import org.commonmark.ext.front.matter.YamlFrontMatterExtension;
+import org.commonmark.ext.front.matter.YamlFrontMatterVisitor;
+import org.commonmark.ext.gfm.strikethrough.StrikethroughExtension;
+import org.commonmark.ext.gfm.tables.TablesExtension;
+import org.commonmark.ext.heading.anchor.HeadingAnchorExtension;
+import org.commonmark.ext.ins.InsExtension;
 import org.commonmark.node.*;
 import org.commonmark.parser.Parser;
 import org.commonmark.renderer.html.HtmlRenderer;
-import org.commonmark.ext.autolink.AutolinkExtension;
-import org.commonmark.ext.gfm.tables.TablesExtension;
-import org.commonmark.ext.heading.anchor.HeadingAnchorExtension;
-import org.commonmark.ext.gfm.strikethrough.StrikethroughExtension;
-import org.commonmark.ext.front.matter.YamlFrontMatterExtension;
-import org.commonmark.ext.front.matter.YamlFrontMatterVisitor;
-import org.commonmark.ext.ins.InsExtension;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
@@ -23,12 +22,12 @@ import java.util.*;
  * Utility class for parsing Markdown content using CommonMark.
  */
 public final class MarkdownParser {
-    
+
     // Prevent instantiation
     private MarkdownParser() {
         throw new AssertionError("Utility class should not be instantiated");
     }
-    
+
     /**
      * Parse markdown content into a structured MarkdownContent object.
      * 
@@ -39,7 +38,7 @@ public final class MarkdownParser {
         if (markdown == null || markdown.isEmpty()) {
             return MarkdownContent.builder().rawContent("").htmlContent("").build();
         }
-        
+
         // Create parser with extensions
         List<org.commonmark.Extension> extensions = Arrays.asList(
                 AutolinkExtension.create(),
@@ -49,46 +48,46 @@ public final class MarkdownParser {
                 HeadingAnchorExtension.create(),
                 YamlFrontMatterExtension.create()
         );
-        
+
         Parser parser = Parser.builder()
                 .extensions(extensions)
                 .build();
-        
+
         HtmlRenderer renderer = HtmlRenderer.builder()
                 .extensions(extensions)
                 .build();
-        
+
         // Parse markdown
         Node document = parser.parse(markdown);
-        
+
         // Process front matter
         YamlFrontMatterVisitor frontMatterVisitor = new YamlFrontMatterVisitor();
         document.accept(frontMatterVisitor);
         Map<String, Object> frontMatter = convertFrontMatter(frontMatterVisitor.getData());
-        
+
         // Collect structural elements
         List<MarkdownHeading> headings = new ArrayList<>();
         List<MarkdownLink> links = new ArrayList<>();
         List<MarkdownImage> images = new ArrayList<>();
         List<MarkdownCodeBlock> codeBlocks = new ArrayList<>();
-        
+
         // Extract structure by visiting nodes
         StructureCollector collector = new StructureCollector(headings, links, images, codeBlocks);
         document.accept(collector);
-        
+
         // Extract title (first heading if available)
         String title = null;
         if (!headings.isEmpty()) {
             title = headings.get(0).getText();
         }
-        
+
         // Count words and estimate reading time
         int wordCount = countWords(markdown);
         int readingTimeMinutes = calculateReadingTime(wordCount);
-        
+
         // Render HTML
         String htmlContent = renderer.render(document);
-        
+
         return MarkdownContent.builder()
                 .title(title)
                 .rawContent(markdown)
@@ -102,7 +101,7 @@ public final class MarkdownParser {
                 .readingTimeMinutes(readingTimeMinutes)
                 .build();
     }
-    
+
     /**
      * Parse markdown content from a file.
      * 
@@ -111,10 +110,10 @@ public final class MarkdownParser {
      * @throws IOException If an IO error occurs
      */
     public static MarkdownContent parseMarkdownFile(File file) throws IOException {
-        String content = Files.readString(file.toPath());
+        String content = io.joshuasalcedo.utility.FileUtils.readFileAsString(file);
         return parseMarkdown(content);
     }
-    
+
     /**
      * Parse markdown content from a Path.
      * 
@@ -123,10 +122,10 @@ public final class MarkdownParser {
      * @throws IOException If an IO error occurs
      */
     public static MarkdownContent parseMarkdownFile(Path path) throws IOException {
-        String content = Files.readString(path);
+        String content = io.joshuasalcedo.utility.FileUtils.readFileAsString(path.toFile());
         return parseMarkdown(content);
     }
-    
+
     /**
      * Parse markdown content from a Reader.
      * 
@@ -143,7 +142,7 @@ public final class MarkdownParser {
         }
         return parseMarkdown(sb.toString());
     }
-    
+
     /**
      * Simply convert markdown to HTML.
      * 
@@ -154,26 +153,26 @@ public final class MarkdownParser {
         if (markdown == null || markdown.isEmpty()) {
             return "";
         }
-        
+
         List<org.commonmark.Extension> extensions = Arrays.asList(
                 AutolinkExtension.create(),
                 TablesExtension.create(),
                 StrikethroughExtension.create(),
                 InsExtension.create()
         );
-        
+
         Parser parser = Parser.builder()
                 .extensions(extensions)
                 .build();
-        
+
         HtmlRenderer renderer = HtmlRenderer.builder()
                 .extensions(extensions)
                 .build();
-        
+
         Node document = parser.parse(markdown);
         return renderer.render(document);
     }
-    
+
     /**
      * Extract all headings from markdown content.
      * 
@@ -184,7 +183,7 @@ public final class MarkdownParser {
         MarkdownContent content = parseMarkdown(markdown);
         return content.getHeadings();
     }
-    
+
     /**
      * Extract all links from markdown content.
      * 
@@ -195,7 +194,7 @@ public final class MarkdownParser {
         MarkdownContent content = parseMarkdown(markdown);
         return content.getLinks();
     }
-    
+
     /**
      * Extract all images from markdown content.
      * 
@@ -206,7 +205,7 @@ public final class MarkdownParser {
         MarkdownContent content = parseMarkdown(markdown);
         return content.getImages();
     }
-    
+
     /**
      * Extract all code blocks from markdown content.
      * 
@@ -217,7 +216,7 @@ public final class MarkdownParser {
         MarkdownContent content = parseMarkdown(markdown);
         return content.getCodeBlocks();
     }
-    
+
     /**
      * Count the words in a markdown text.
      *
@@ -228,7 +227,7 @@ public final class MarkdownParser {
         if (markdown == null || markdown.isEmpty()) {
             return 0;
         }
-        
+
         // Remove YAML front matter if present
         String content = markdown;
         if (content.startsWith("---")) {
@@ -237,16 +236,16 @@ public final class MarkdownParser {
                 content = content.substring(end + 3);
             }
         }
-        
+
         // Remove code blocks
         content = content.replaceAll("```.*?```", " ");
-        
+
         // Remove HTML tags
         content = content.replaceAll("<[^>]*>", " ");
-        
+
         // Remove markdown symbols
         content = content.replaceAll("[#*_~`\\[\\](){}|]+", " ");
-        
+
         // Split by whitespace and count non-empty words
         String[] words = content.trim().split("\\s+");
         int count = 0;
@@ -255,10 +254,10 @@ public final class MarkdownParser {
                 count++;
             }
         }
-        
+
         return count;
     }
-    
+
     /**
      * Calculate estimated reading time in minutes.
      *
@@ -274,7 +273,7 @@ public final class MarkdownParser {
         }
         return Math.max(1, minutes);
     }
-    
+
     /**
      * Convert front matter data to a map of objects.
      *
@@ -283,11 +282,11 @@ public final class MarkdownParser {
      */
     private static Map<String, Object> convertFrontMatter(Map<String, List<String>> frontMatterData) {
         Map<String, Object> result = new HashMap<>();
-        
+
         for (Map.Entry<String, List<String>> entry : frontMatterData.entrySet()) {
             String key = entry.getKey();
             List<String> values = entry.getValue();
-            
+
             if (values.size() == 1) {
                 // Single value
                 result.put(key, values.get(0));
@@ -296,10 +295,10 @@ public final class MarkdownParser {
                 result.put(key, values);
             }
         }
-        
+
         return result;
     }
-    
+
     /**
      * A node visitor that collects structural elements from a markdown document.
      */
@@ -309,7 +308,7 @@ public final class MarkdownParser {
         private final List<MarkdownImage> images;
         private final List<MarkdownCodeBlock> codeBlocks;
         private int nodePosition = 0;
-        
+
         public StructureCollector(
                 List<MarkdownHeading> headings,
                 List<MarkdownLink> links,
@@ -320,7 +319,7 @@ public final class MarkdownParser {
             this.images = images;
             this.codeBlocks = codeBlocks;
         }
-        
+
         @Override
         public void visit(Heading heading) {
             String id = "";
@@ -332,7 +331,7 @@ public final class MarkdownParser {
                         .replaceAll("[^\\w\\s-]", "")
                         .replaceAll("\\s+", "-");
             }
-            
+
             StringBuilder textBuilder = new StringBuilder();
             Node child = heading.getFirstChild();
             while (child != null) {
@@ -341,36 +340,36 @@ public final class MarkdownParser {
                 }
                 child = child.getNext();
             }
-            
+
             MarkdownHeading mdHeading = MarkdownHeading.builder()
                     .level(heading.getLevel())
                     .text(textBuilder.toString())
                     .id(id)
                     .position(nodePosition++)
                     .build();
-            
+
             headings.add(mdHeading);
             visitChildren(heading);
         }
-        
+
         @Override
         public void visit(Link link) {
             String text = "";
             if (link.getFirstChild() instanceof Text) {
                 text = ((Text) link.getFirstChild()).getLiteral();
             }
-            
+
             MarkdownLink mdLink = MarkdownLink.builder()
                     .text(text)
                     .url(link.getDestination())
                     .title(link.getTitle())
                     .internal(link.getDestination().startsWith("#"))
                     .build();
-            
+
             links.add(mdLink);
             visitChildren(link);
         }
-        
+
         @Override
         public void visit(Image image) {
             MarkdownImage mdImage = MarkdownImage.builder()
@@ -379,11 +378,11 @@ public final class MarkdownParser {
                     .title(image.getTitle())
                     .local(!image.getDestination().startsWith("http"))
                     .build();
-            
+
             images.add(mdImage);
             visitChildren(image);
         }
-        
+
         @Override
         public void visit(FencedCodeBlock codeBlock) {
             MarkdownCodeBlock mdCodeBlock = MarkdownCodeBlock.builder()
@@ -392,11 +391,11 @@ public final class MarkdownParser {
                     .fenced(true)
                     .position(nodePosition++)
                     .build();
-            
+
             codeBlocks.add(mdCodeBlock);
             visitChildren(codeBlock);
         }
-        
+
         @Override
         public void visit(IndentedCodeBlock codeBlock) {
             MarkdownCodeBlock mdCodeBlock = MarkdownCodeBlock.builder()
@@ -405,9 +404,59 @@ public final class MarkdownParser {
                     .fenced(false)
                     .position(nodePosition++)
                     .build();
-            
+
             codeBlocks.add(mdCodeBlock);
             visitChildren(codeBlock);
         }
+    }
+
+    /**
+     * Convert MarkdownContent to JSON.
+     *
+     * @param content The MarkdownContent object
+     * @return JSON representation of the MarkdownContent
+     */
+    public static String toJson(MarkdownContent content) {
+        return io.joshuasalcedo.utility.JsonUtils.toPrettyJson(content);
+    }
+
+    /**
+     * Convert a list of headings to JSON.
+     *
+     * @param headings The list of headings
+     * @return JSON representation of the headings
+     */
+    public static String headingsToJson(List<MarkdownHeading> headings) {
+        return io.joshuasalcedo.utility.JsonUtils.toPrettyJson(headings);
+    }
+
+    /**
+     * Convert a list of links to JSON.
+     *
+     * @param links The list of links
+     * @return JSON representation of the links
+     */
+    public static String linksToJson(List<MarkdownLink> links) {
+        return io.joshuasalcedo.utility.JsonUtils.toPrettyJson(links);
+    }
+
+    /**
+     * Convert a list of images to JSON.
+     *
+     * @param images The list of images
+     * @return JSON representation of the images
+     */
+    public static String imagesToJson(List<MarkdownImage> images) {
+        return io.joshuasalcedo.utility.JsonUtils.toPrettyJson(images);
+    }
+
+    /**
+     * Convert a list of code blocks to JSON.
+     *
+     * @param codeBlocks The list of code blocks
+     * @return JSON representation of the code blocks
+     */
+    public static String codeBlocksToJson(List<MarkdownCodeBlock> codeBlocks) {
+        return io.joshuasalcedo.utility.JsonUtils.toPrettyJson(codeBlocks);
     }
 }

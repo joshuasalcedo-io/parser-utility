@@ -5,7 +5,7 @@
   <artifactId>parser-utility</artifactId>
   <name>Java Structure Analyzer</name>
   <version>1.0.0</version>
-  <description>A utility to analyze Java source files and output their structure in JSON format</description>
+  <description>sss</description>
   <scm>
     <connection>scm:git:https://github.com/joshuasalcedo/parser-utility.git</connection>
     <developerConnection>scm:git:https://github.com/joshuasalcedo/parser-utility.git</developerConnection>

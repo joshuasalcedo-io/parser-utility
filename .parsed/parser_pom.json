@@ -1,10 +1,17 @@
 {
-  "pomFiles": [
-    {
+  "pomFiles": {
+    "src/test/resources/test/pom/sample-project/pom.xml": {
+      "path": "/home/joshuasalcedo-io/parser-utility/./src/test/resources/test/pom/sample-project/pom.xml",
+      "groupId": "com.example",
+      "artifactId": "multi-module-parent",
+      "version": "1.0.0",
+      "dependencies": []
+    },
+    "pom.xml": {
       "path": "/home/joshuasalcedo-io/parser-utility/./pom.xml",
       "groupId": "io.joshuasalcedo",
       "name": "Java Structure Analyzer",
-      "description": "A utility to analyze Java source files and output their structure in JSON format",
+      "description": "sss",
       "artifactId": "parser-utility",
       "version": "1.0.0",
       "dependencies": [
@@ -91,13 +98,6 @@
           "version": "1.0-SNAPSHOT"
         }
       ]
-    },
-    {
-      "path": "/home/joshuasalcedo-io/parser-utility/./src/test/resources/test/pom/sample-project/pom.xml",
-      "groupId": "com.example",
-      "artifactId": "multi-module-parent",
-      "version": "1.0.0",
-      "dependencies": []
     }
-  ]
+  }
 }

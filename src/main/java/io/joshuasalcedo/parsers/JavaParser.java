@@ -35,27 +35,12 @@ public final class JavaParser {
      * @return List of Java files
      */
     public static List<File> findJavaFiles(File directory) {
-        List<File> javaFiles = new ArrayList<>();
-        findJavaFilesRecursive(directory, javaFiles);
-        return javaFiles;
-    }
-
-    /**
-     * Recursive helper method to find all Java files.
-     *
-     * @param directory The directory to search
-     * @param javaFiles List to collect Java files
-     */
-    private static void findJavaFilesRecursive(File directory, List<File> javaFiles) {
-        File[] files = directory.listFiles();
-        if (files != null) {
-            for (File file : files) {
-                if (file.isDirectory()) {
-                    findJavaFilesRecursive(file, javaFiles);
-                } else if (file.getName().endsWith(".java")) {
-                    javaFiles.add(file);
-                }
-            }
+        try {
+            return io.joshuasalcedo.utility.FileUtils.listFilesByExtension(directory.getAbsolutePath(), "java");
+        } catch (java.io.IOException e) {
+            // Log the error and return an empty list
+            System.err.println("Error finding Java files: " + e.getMessage());
+            return new ArrayList<>();
         }
     }
 
@@ -424,4 +409,28 @@ public final class JavaParser {
             return parameters;
         }
 
+    /**
+     * Convert a ClassStructure object to JSON.
+     *
+     * @param classStructure The ClassStructure object to convert
+     * @return JSON representation of the ClassStructure
+     */
+    public static String toJson(ClassStructure classStructure) {
+        return io.joshuasalcedo.utility.JsonUtils.toPrettyJson(classStructure);
+    }
+
+    /**
+     * Convert a ClassStructure object to JSON with specified formatting.
+     *
+     * @param classStructure The ClassStructure object to convert
+     * @param prettyPrint Whether to format the JSON with indentation
+     * @return JSON representation of the ClassStructure
+     */
+    public static String toJson(ClassStructure classStructure, boolean prettyPrint) {
+        if (prettyPrint) {
+            return io.joshuasalcedo.utility.JsonUtils.toPrettyJson(classStructure);
+        } else {
+            return io.joshuasalcedo.utility.JsonUtils.toJson(classStructure);
+        }
+    }
 }
