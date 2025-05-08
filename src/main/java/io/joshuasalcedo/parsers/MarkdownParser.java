@@ -1,5 +1,6 @@
-package io.joshuasalcedo.model.markdown;
+package io.joshuasalcedo.parsers;
 
+import io.joshuasalcedo.model.markdown.*;
 import org.commonmark.node.*;
 import org.commonmark.parser.Parser;
 import org.commonmark.renderer.html.HtmlRenderer;
@@ -21,10 +22,10 @@ import java.util.*;
 /**
  * Utility class for parsing Markdown content using CommonMark.
  */
-public final class MarkdownParserUtility {
+public final class MarkdownParser {
     
     // Prevent instantiation
-    private MarkdownParserUtility() {
+    private MarkdownParser() {
         throw new AssertionError("Utility class should not be instantiated");
     }
     

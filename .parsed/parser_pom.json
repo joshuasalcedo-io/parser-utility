@@ -1,0 +1,103 @@
+{
+  "pomFiles": [
+    {
+      "path": "/home/joshuasalcedo-io/parser-utility/./pom.xml",
+      "groupId": "io.joshuasalcedo",
+      "name": "Java Structure Analyzer",
+      "description": "A utility to analyze Java source files and output their structure in JSON format",
+      "artifactId": "parser-utility",
+      "version": "1.0.0",
+      "dependencies": [
+        {
+          "groupId": "org.junit.jupiter",
+          "scope": "test",
+          "artifactId": "junit-jupiter",
+          "version": "5.10.2"
+        },
+        {
+          "groupId": "com.google.code.gson",
+          "artifactId": "gson",
+          "version": "2.13.1"
+        },
+        {
+          "groupId": "commons-io",
+          "artifactId": "commons-io",
+          "version": "2.19.0"
+        },
+        {
+          "groupId": "org.apache.maven",
+          "artifactId": "maven-model",
+          "version": "4.0.0-rc-3"
+        },
+        {
+          "groupId": "org.apache.maven",
+          "artifactId": "maven-api-model",
+          "version": "4.0.0-rc-3"
+        },
+        {
+          "groupId": "org.eclipse.jgit",
+          "artifactId": "org.eclipse.jgit",
+          "version": "7.2.0.202503040940-r"
+        },
+        {
+          "groupId": "org.commonmark",
+          "artifactId": "commonmark",
+          "version": "0.24.0"
+        },
+        {
+          "groupId": "org.projectlombok",
+          "scope": "provided",
+          "artifactId": "lombok",
+          "version": "1.18.38"
+        },
+        {
+          "groupId": "org.commonmark",
+          "artifactId": "commonmark-ext-autolink",
+          "version": "0.24.0"
+        },
+        {
+          "groupId": "org.commonmark",
+          "artifactId": "commonmark-ext-gfm-tables",
+          "version": "0.24.0"
+        },
+        {
+          "groupId": "org.jsoup",
+          "artifactId": "jsoup",
+          "version": "1.20.1"
+        },
+        {
+          "groupId": "org.commonmark",
+          "artifactId": "commonmark-ext-gfm-strikethrough",
+          "version": "0.24.0"
+        },
+        {
+          "groupId": "org.commonmark",
+          "artifactId": "commonmark-ext-heading-anchor",
+          "version": "0.24.0"
+        },
+        {
+          "groupId": "org.commonmark",
+          "artifactId": "commonmark-ext-yaml-front-matter",
+          "version": "0.24.0"
+        },
+        {
+          "groupId": "org.commonmark",
+          "artifactId": "commonmark-ext-ins",
+          "version": "0.24.0"
+        },
+        {
+          "groupId": "io.joshuasalcedo",
+          "artifactId": "boot-utility-starter",
+          "version": "1.0-SNAPSHOT"
+        }
+      ]
+    },
+    {
+      "path": "/home/joshuasalcedo-io/parser-utility/./src/test/resources/test/pom/sample-project/pom.xml",
+      "groupId": "com.example",
+      "artifactId": "multi-module-parent",
+      "version": "1.0.0",
+      "dependencies": []
+    }
+  ]
+}

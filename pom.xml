@@ -5,12 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.joshuasalcedo</groupId>
-    <artifactId>java-structure</artifactId>
+    <artifactId>parser-utility</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
 
     <name>Java Structure Analyzer</name>
-    <description>A utility to analyze Java source files and output their structure in JSON format</description>
+    <description>sss</description>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
@@ -152,23 +152,23 @@
         </repository>
     </distributionManagement>
 
-    <profiles>
-        <profile>
-            <id>github</id>
-            <distributionManagement>
-                <repository>
-                    <id>github</id>
-                    <name>GitHub Packages</name>
-                    <url>https://maven.pkg.github.com/joshuasalcedo/parser-utility</url>
-                </repository>
-                <snapshotRepository>
-                    <id>github</id>
-                    <name>GitHub Packages</name>
-                    <url>https://maven.pkg.github.com/joshuasalcedo/parser-utility</url>
-                </snapshotRepository>
-            </distributionManagement>
-        </profile>
-    </profiles>
+<!--    <profiles>-->
+<!--        <profile>-->
+<!--            <id>github</id>-->
+<!--            <distributionManagement>-->
+<!--                <repository>-->
+<!--                    <id>github</id>-->
+<!--                    <name>GitHub Packages</name>-->
+<!--                    <url>https://maven.pkg.github.com/joshuasalcedo/parser-utility</url>-->
+<!--                </repository>-->
+<!--                <snapshotRepository>-->
+<!--                    <id>github</id>-->
+<!--                    <name>GitHub Packages</name>-->
+<!--                    <url>https://maven.pkg.github.com/joshuasalcedo/parser-utility</url>-->
+<!--                </snapshotRepository>-->
+<!--            </distributionManagement>-->
+<!--        </profile>-->
+<!--    </profiles>-->
 
     <scm>
         <connection>scm:git:https://github.com/joshuasalcedo/parser-utility.git</connection>

@@ -62,6 +62,10 @@ run_command "mvn exec:java -Dexec.mainClass=\"io.joshuasalcedo.ParserRunner\" -D
 print_header "PARSING HTML FILES"
 run_command "mvn exec:java -Dexec.mainClass=\"io.joshuasalcedo.ParserRunner\" -Dexec.args=\"html src/main/resources\""
 
+# Parse Markdown files
+print_header "PARSING MARKDOWN FILES"
+run_command "mvn exec:java -Dexec.mainClass=\"io.joshuasalcedo.ParserRunner\" -Dexec.args=\"markdown src/test/resources\""
+
 # Parse everything (comprehensive analysis)
 print_header "COMPREHENSIVE ANALYSIS (PARSING ALL)"
 run_command "mvn exec:java -Dexec.mainClass=\"io.joshuasalcedo.ParserRunner\" -Dexec.args=\"all .\""
@@ -78,6 +82,7 @@ if [ -n "$JAR_FILE" ]; then
     echo -e "${YELLOW}$ java -jar $JAR_FILE help${NC}"
     echo -e "${YELLOW}$ java -jar $JAR_FILE all /path/to/project${NC}"
     echo -e "${YELLOW}$ java -jar $JAR_FILE java /path/to/java/files${NC}"
+    echo -e "${YELLOW}$ java -jar $JAR_FILE markdown /path/to/markdown/files${NC}"
 fi
 
 # Conclusion

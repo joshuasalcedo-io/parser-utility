@@ -1,0 +1,102 @@
+{
+  "markdownFiles": [
+    {
+      "codeBlocks": [
+        {
+          "fenced": true,
+          "language": "",
+          "content": "src/test/resources/\n├── sample-pom.xml                 # Sample POM file for PomParser tests\n├── multi-module-pom.xml           # Multi-module POM file for PomParser tests\n├── SampleClass.java               # Sample Java file for JavaParser tests\n├── sample.html                    # Sample HTML file for HtmlParser tests\n├── repo/                          # Git repository for GitParser tests\n└── multi-module-project/          # Directory structure for multi-module project tests\n    ├── pom.xml                    # Parent POM file\n    ├── module-a/\n    │   └── pom.xml               # Module A POM file\n    ├── module-b/\n    │   └── pom.xml               # Module B POM file\n    └── module-c/\n        └── pom.xml               # Module C POM file\n"
+        },
+        {
+          "fenced": true,
+          "language": "bash",
+          "content": "mkdir -p src/test/resources/multi-module-project/module-a\nmkdir -p src/test/resources/multi-module-project/module-b\nmkdir -p src/test/resources/multi-module-project/module-c\nmkdir -p src/test/resources/java-files\n"
+        },
+        {
+          "fenced": true,
+          "language": "bash",
+          "content": "chmod +x create-test-repo.sh\n./create-test-repo.sh\n"
+        },
+        {
+          "fenced": true,
+          "language": "bash",
+          "content": "# Run all tests\nmvn test\n\n# Run specific test classes\nmvn test -Dtest\u003dPomParserTest\nmvn test -Dtest\u003dJavaParserTest\nmvn test -Dtest\u003dHtmlParserTest\nmvn test -Dtest\u003dGitParserTest\n"
+        }
+      ],
+      "path": "/home/joshuasalcedo-io/parser-utility/src/test/resources/test/markdown/test.md",
+      "images": [],
+      "wordCount": 374,
+      "headings": [
+        {
+          "level": 1,
+          "text": "Parser Test Resources",
+          "id": "parser-test-resources"
+        },
+        {
+          "level": 2,
+          "text": "Directory Structure",
+          "id": "directory-structure"
+        },
+        {
+          "level": 2,
+          "text": "Setting Up Test Resources",
+          "id": "setting-up-test-resources"
+        },
+        {
+          "level": 2,
+          "text": "Running Tests",
+          "id": "running-tests"
+        },
+        {
+          "level": 2,
+          "text": "Test Contents",
+          "id": "test-contents"
+        },
+        {
+          "level": 3,
+          "text": "PomParser Tests",
+          "id": "pomparser-tests"
+        },
+        {
+          "level": 3,
+          "text": "JavaParser Tests",
+          "id": "javaparser-tests"
+        },
+        {
+          "level": 3,
+          "text": "HtmlParser Tests",
+          "id": "htmlparser-tests"
+        },
+        {
+          "level": 3,
+          "text": "GitParser Tests",
+          "id": "gitparser-tests"
+        },
+        {
+          "level": 2,
+          "text": "Expected Test Failures",
+          "id": "expected-test-failures"
+        }
+      ],
+      "links": [],
+      "title": "Parser Test Resources",
+      "readingTimeMinutes": 2
+    },
+    {
+      "codeBlocks": [],
+      "path": "/home/joshuasalcedo-io/parser-utility/src/test/resources/repo/README.md",
+      "images": [],
+      "wordCount": 2,
+      "headings": [
+        {
+          "level": 1,
+          "text": "Test Repository",
+          "id": "test-repository"
+        }
+      ],
+      "links": [],
+      "title": "Test Repository",
+      "readingTimeMinutes": 1
+    }
+  ]
+}
