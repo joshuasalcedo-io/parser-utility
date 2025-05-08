@@ -1,0 +1,131 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ------------------------< io.joshuasalcedo:ai >-------------------------
+[INFO] Building ai 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.4.1:clean (default-clean) @ ai ---
+[INFO] Deleting /home/swa/IMPORTANT/microservice/fullstack-template/target
+[INFO] 
+[INFO] --- frontend:1.15.1:install-node-and-pnpm (install-node-and-pnpm) @ ai ---
+[INFO] Installing node version v18.19.1
+[INFO] Unpacking /home/swa/.m2/repository/com/github/eirslett/node/18.19.1/node-18.19.1-linux-x64.tar.gz into /home/swa/IMPORTANT/microservice/fullstack-template/target/node/tmp
+[INFO] Copying node binary from /home/swa/IMPORTANT/microservice/fullstack-template/target/node/tmp/node-v18.19.1-linux-x64/bin/node to /home/swa/IMPORTANT/microservice/fullstack-template/target/node/node
+[INFO] Installed node locally.
+[INFO] Installing pnpm version 10.7.1
+[INFO] Unpacking /home/swa/.m2/repository/com/github/eirslett/pnpm/10.7.1/pnpm-10.7.1.tar.gz into /home/swa/IMPORTANT/microservice/fullstack-template/target/node/node_modules
+[INFO] Installed pnpm locally.
+[INFO] No pnpm executable found, creating symbolic link to /home/swa/IMPORTANT/microservice/fullstack-template/target/node/node_modules/pnpm/bin/pnpm.cjs.
+[INFO] 
+[INFO] --- frontend:1.15.1:pnpm (pnpm-install) @ ai ---
+[INFO] Running 'pnpm install --frozen-lockfile' in /home/swa/IMPORTANT/microservice/fullstack-template/src/main/frontend
+[INFO] Lockfile is up to date, resolution step is skipped
+[INFO] Already up to date
+[INFO] 
+[INFO] Done in 1s using pnpm v10.7.1
+[INFO] 
+[INFO] --- frontend:1.15.1:pnpm (pnpm-build) @ ai ---
+[INFO] Running 'pnpm run build' in /home/swa/IMPORTANT/microservice/fullstack-template/src/main/frontend
+[INFO] 
+[INFO] > frontend@0.1.0 build /home/swa/IMPORTANT/microservice/fullstack-template/src/main/frontend
+[INFO] > next build
+[INFO] 
+[INFO]    ▲ Next.js 15.3.1
+[INFO] 
+[INFO]    Creating an optimized production build ...
+[INFO]  ✓ Compiled successfully in 7.0s
+[INFO]    Linting and checking validity of types ...
+[INFO]    Collecting page data ...
+[INFO]    Generating static pages (0/5) ...
+[INFO]    Generating static pages (1/5) 
+[INFO]    Generating static pages (2/5) 
+[INFO]    Generating static pages (3/5) 
+[INFO]  ✓ Generating static pages (5/5)
+[INFO]    Finalizing page optimization ...
+[INFO]    Collecting build traces ...
+[INFO]    Exporting (0/3) ...
+[INFO]  ✓ Exporting (3/3)
+[INFO] 
+[INFO] Route (app)                                 Size  First Load JS
+[INFO] ┌ ○ /                                    5.63 kB         107 kB
+[INFO] └ ○ /_not-found                            979 B         102 kB
+[INFO] + First Load JS shared by all             101 kB
+[INFO]   ├ chunks/220fed5b-33bbae388d42ed7c.js  53.2 kB
+[INFO]   ├ chunks/892-8efa14389b431d70.js       45.9 kB
+[INFO]   └ other shared chunks (total)          1.89 kB
+[INFO] 
+[INFO] 
+[INFO] ○  (Static)  prerendered as static content
+[INFO] 
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ ai ---
+[INFO] Copying 1 resource from src/main/resources to target/classes
+[INFO] Copying 0 resource from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ ai ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 3 source files with javac [debug parameters release 17] to target/classes
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ ai ---
+[INFO] skip non existing resourceDirectory /home/swa/IMPORTANT/microservice/fullstack-template/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ ai ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 1 source file with javac [debug parameters release 17] to target/test-classes
+[INFO] 
+[INFO] --- surefire:3.5.3:test (default-test) @ ai ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running io.joshuasalcedo.ai.AiApplicationTests
+07:57:23.242 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [io.joshuasalcedo.ai.AiApplicationTests]: AiApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+07:57:23.350 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration io.joshuasalcedo.ai.AiApplication for test class io.joshuasalcedo.ai.AiApplicationTests
+07:57:23.506 [main] INFO org.springframework.boot.devtools.restart.RestartApplicationListener -- Restart disabled due to context in which it is running
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.4.5)
+
+2025-05-01T07:57:23.738+08:00  INFO 157965 --- [ai] [           main] io.joshuasalcedo.ai.AiApplicationTests   : Starting AiApplicationTests using Java 21.0.2 with PID 157965 (started by swa in /home/swa/IMPORTANT/microservice/fullstack-template)
+2025-05-01T07:57:23.740+08:00  INFO 157965 --- [ai] [           main] io.joshuasalcedo.ai.AiApplicationTests   : No active profile set, falling back to 1 default profile: "default"
+2025-05-01T07:57:24.992+08:00  INFO 157965 --- [ai] [           main] io.joshuasalcedo.ai.AiApplicationTests   : Started AiApplicationTests in 1.497 seconds (process running for 2.43)
+Mockito is currently self-attaching to enable the inline-mock-maker. This will no longer work in future releases of the JDK. Please add Mockito as an agent to your build what is described in Mockito's documentation: https://javadoc.io/doc/org.mockito/mockito-core/latest/org/mockito/Mockito.html#0.3
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+WARNING: A Java agent has been loaded dynamically (/home/swa/.m2/repository/net/bytebuddy/byte-buddy-agent/1.15.11/byte-buddy-agent-1.15.11.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.570 s -- in io.joshuasalcedo.ai.AiApplicationTests
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] 
+[INFO] --- resources:3.3.1:copy-resources (copy-resources) @ ai ---
+[INFO] Copying 31 resources from src/main/frontend/out to target/classes/static
+[INFO] 
+[INFO] --- jar:3.4.2:jar (default-jar) @ ai ---
+[INFO] Building jar: /home/swa/IMPORTANT/microservice/fullstack-template/target/ai-0.0.1-SNAPSHOT.jar
+[INFO] 
+[INFO] --- spring-boot:3.4.5:repackage (repackage) @ ai ---
+[INFO] Replacing main artifact /home/swa/IMPORTANT/microservice/fullstack-template/target/ai-0.0.1-SNAPSHOT.jar with repackaged archive, adding nested dependencies in BOOT-INF/.
+[INFO] The original artifact has been renamed to /home/swa/IMPORTANT/microservice/fullstack-template/target/ai-0.0.1-SNAPSHOT.jar.original
+[INFO] 
+[INFO] --- install:3.1.4:install (default-install) @ ai ---
+[INFO] Installing /home/swa/IMPORTANT/microservice/fullstack-template/pom.xml to /home/swa/.m2/repository/io/joshuasalcedo/ai/0.0.1-SNAPSHOT/ai-0.0.1-SNAPSHOT.pom
+[INFO] Installing /home/swa/IMPORTANT/microservice/fullstack-template/target/ai-0.0.1-SNAPSHOT.jar to /home/swa/.m2/repository/io/joshuasalcedo/ai/0.0.1-SNAPSHOT/ai-0.0.1-SNAPSHOT.jar
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  40.223 s
+[INFO] Finished at: 2025-05-01T07:57:29+08:00
+[INFO] ------------------------------------------------------------------------

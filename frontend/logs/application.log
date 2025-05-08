@@ -1,0 +1,14 @@
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.4.5)
+
+2025-05-01T07:57:30.111+08:00  INFO 158215 --- [ai] [           main] io.joshuasalcedo.ai.AiApplication        : Starting AiApplication v0.0.1-SNAPSHOT using Java 21.0.2 with PID 158215 (/home/swa/IMPORTANT/microservice/fullstack-template/target/ai-0.0.1-SNAPSHOT.jar started by swa in /home/swa/IMPORTANT/microservice/fullstack-template)
+2025-05-01T07:57:30.113+08:00  INFO 158215 --- [ai] [           main] io.joshuasalcedo.ai.AiApplication        : No active profile set, falling back to 1 default profile: "default"
+2025-05-01T07:57:31.888+08:00  INFO 158215 --- [ai] [           main] o.s.b.web.embedded.netty.NettyWebServer  : Netty started on port 8090 (http)
+2025-05-01T07:57:31.905+08:00  INFO 158215 --- [ai] [           main] io.joshuasalcedo.ai.AiApplication        : Started AiApplication in 2.3 seconds (process running for 2.747)

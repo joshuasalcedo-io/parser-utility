@@ -1,0 +1,307 @@
+@startuml Parser JSON Structure
+
+' Main Parser Output
+package "Parser Output" {
+    class "JSON Output" as Output {
+        + git: GitRepositoryInfo
+        + java: Map<String, ClassStructure>
+        + pom: Map<String, PomStructure>
+        + markdown: Map<String, MarkdownContent>
+        + html: Map<String, HtmlDocumentInfo>
+    }
+}
+
+' Git Repository Models
+package "Git Models" {
+    class GitRepositoryInfo {
+        + name: String
+        + path: String
+        + currentBranch: String
+        + remoteUrl: String
+        + latestCommit: CommitInfo
+        + branches: List<BranchInfo>
+        + tags: List<TagInfo>
+        + hasUncommittedChanges: boolean
+        + commitCount: int
+        + statistics: Map<String, Object>
+        + topContributors: List<ContributorInfo>
+        + creationDate: Date
+        + lastUpdatedDate: Date
+        + fileExtensionCounts: Map<String, Integer>
+    }
+
+    class CommitInfo {
+        + id: String
+        + shortId: String
+        + message: String
+        + authorName: String
+        + authorEmail: String
+        + authorDate: Date
+        + committerName: String
+        + committerEmail: String
+        + commitDate: Date
+        + parentIds: List<String>
+        + changedFiles: List<FileChange>
+    }
+
+    class FileChange {
+        + type: ChangeType
+        + path: String
+        + oldPath: String
+        + linesAdded: int
+        + linesDeleted: int
+        + mode: int
+    }
+
+    enum ChangeType {
+        ADD
+        MODIFY
+        DELETE
+        RENAME
+        COPY
+    }
+
+    class BranchInfo {
+        + name: String
+        + current: boolean
+        + remote: boolean
+        + remoteName: String
+        + commitId: String
+        + trackingBranch: String
+        + merged: boolean
+    }
+
+    class TagInfo {
+        + name: String
+        + commitId: String
+        + annotated: boolean
+        + message: String
+        + taggerName: String
+        + taggerEmail: String
+        + taggerDate: Date
+    }
+
+    class ContributorInfo {
+        + name: String
+        + email: String
+        + commitCount: int
+        + linesAdded: int
+        + linesDeleted: int
+        + firstCommitDate: Date
+        + lastCommitDate: Date
+    }
+}
+
+' Java File Models
+package "Java Models" {
+    class ClassStructure {
+        + name: String
+        + packageName: String
+        + path: String
+        + type: String
+        + modifiers: List<String>
+        + superclass: String
+        + interfaces: List<String>
+        + methods: List<MethodStructure>
+        + fields: List<FieldStructure>
+        + innerClasses: List<ClassStructure>
+        + javadoc: JavadocStructure
+        + imports: List<String>
+        + annotations: List<String>
+    }
+
+    class MethodStructure {
+        + name: String
+        + returnType: String
+        + modifiers: List<String>
+        + parameters: List<Parameter>
+        + exceptions: List<String>
+        + javadoc: JavadocStructure
+        + annotations: List<String>
+        + body: String
+    }
+
+    class Parameter {
+        + name: String
+        + type: String
+        + annotations: List<String>
+    }
+
+    class JavadocStructure {
+        + description: String
+        + tags: List<JavadocTag>
+    }
+
+    class JavadocTag {
+        + name: String
+        + value: String
+    }
+
+    class FieldStructure {
+        + name: String
+        + type: String
+        + modifiers: List<String>
+        + initialValue: String
+        + javadoc: JavadocStructure
+        + annotations: List<String>
+    }
+}
+
+' Maven POM Models
+package "Maven Models" {
+    class PomStructure {
+        + coordinates: PomCoordinates
+        + parent: ParentInfo
+        + name: String
+        + description: String
+        + url: String
+        + dependencies: List<Dependency>
+        + plugins: List<Plugin>
+        + properties: List<Property>
+        + modules: List<String>
+        + profiles: List<String>
+    }
+
+    class PomCoordinates {
+        + groupId: String
+        + artifactId: String
+        + version: String
+        + packaging: String
+    }
+
+    class ParentInfo {
+        + groupId: String
+        + artifactId: String
+        + version: String
+        + relativePath: String
+    }
+
+    class Dependency {
+        + groupId: String
+        + artifactId: String
+        + version: String
+        + scope: String
+        + optional: boolean
+    }
+
+    class Plugin {
+        + groupId: String
+        + artifactId: String
+        + version: String
+        + configuration: PluginConfiguration
+    }
+
+    class PluginConfiguration {
+        + properties: Map<String, String>
+    }
+
+    class Property {
+        + name: String
+        + value: String
+    }
+}
+
+' Markdown Models
+package "Markdown Models" {
+    class MarkdownContent {
+        + headings: List<MarkdownHeading>
+        + links: List<MarkdownLink>
+        + images: List<MarkdownImage>
+        + codeBlocks: List<MarkdownCodeBlock>
+        + plainText: String
+    }
+
+    class MarkdownHeading {
+        + level: int
+        + text: String
+        + id: String
+    }
+
+    class MarkdownLink {
+        + text: String
+        + url: String
+        + title: String
+    }
+
+    class MarkdownImage {
+        + altText: String
+        + url: String
+        + title: String
+    }
+
+    class MarkdownCodeBlock {
+        + language: String
+        + code: String
+    }
+}
+
+' HTML Models
+package "HTML Models" {
+    class HtmlDocumentInfo {
+        + title: String
+        + headings: List<HtmlHeading>
+        + links: List<HtmlLink>
+        + images: List<HtmlImage>
+        + metadata: Map<String, String>
+    }
+
+    class HtmlHeading {
+        + level: int
+        + text: String
+        + id: String
+    }
+
+    class HtmlLink {
+        + text: String
+        + href: String
+        + rel: String
+    }
+
+    class HtmlImage {
+        + src: String
+        + alt: String
+        + width: int
+        + height: int
+    }
+}
+
+' Relationships
+Output --> GitRepositoryInfo
+Output --> ClassStructure
+Output --> PomStructure
+Output --> MarkdownContent
+Output --> HtmlDocumentInfo
+
+GitRepositoryInfo --> CommitInfo
+GitRepositoryInfo --> BranchInfo
+GitRepositoryInfo --> TagInfo
+GitRepositoryInfo --> ContributorInfo
+CommitInfo --> FileChange
+FileChange --> ChangeType
+
+ClassStructure --> MethodStructure
+ClassStructure --> FieldStructure
+ClassStructure --> JavadocStructure
+ClassStructure --> ClassStructure : innerClasses
+MethodStructure --> Parameter
+MethodStructure --> JavadocStructure
+JavadocStructure --> JavadocTag
+FieldStructure --> JavadocStructure
+
+PomStructure --> PomCoordinates
+PomStructure --> ParentInfo
+PomStructure --> Dependency
+PomStructure --> Plugin
+PomStructure --> Property
+Plugin --> PluginConfiguration
+
+MarkdownContent --> MarkdownHeading
+MarkdownContent --> MarkdownLink
+MarkdownContent --> MarkdownImage
+MarkdownContent --> MarkdownCodeBlock
+
+HtmlDocumentInfo --> HtmlHeading
+HtmlDocumentInfo --> HtmlLink
+HtmlDocumentInfo --> HtmlImage
+
+@enduml
