@@ -1,0 +1,1565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parser Utility Viewer</title>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2980b9;
+            --background-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --border-color: #e0e0e0;
+            --success-color: #2ecc71;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--background-color);
+            color: var(--text-color);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        h1, h2, h3, h4 {
+            margin-top: 0;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+            padding: 20px;
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .tabs {
+            display: flex;
+            list-style: none;
+            padding: 0;
+            margin: 0 0 20px 0;
+            overflow-x: auto;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .tabs li {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .tabs li:hover {
+            background-color: rgba(52, 152, 219, 0.1);
+        }
+
+        .tabs li.active {
+            border-bottom: 3px solid var(--primary-color);
+            font-weight: bold;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+        }
+
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top: 4px solid var(--primary-color);
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        pre {
+            background-color: #f6f8fa;
+            border-radius: 6px;
+            padding: 15px;
+            overflow: auto;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .json-key {
+            color: #8a6d3b;
+        }
+
+        .json-string {
+            color: #2e7d32;
+        }
+
+        .json-number {
+            color: #0277bd;
+        }
+
+        .json-boolean {
+            color: #6a1b9a;
+        }
+
+        .json-null {
+            color: #b71c1c;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        table, th, td {
+            border: 1px solid var(--border-color);
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+
+        .badge-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .badge-success {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .badge-warning {
+            background-color: var(--warning-color);
+            color: white;
+        }
+
+        .badge-danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+
+        .expandable {
+            cursor: pointer;
+        }
+
+        .expandable-content {
+            display: none;
+            padding: 10px;
+            margin-top: 10px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+        }
+
+        .filter-container {
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .section-title h2 {
+            margin: 0;
+            margin-right: 10px;
+        }
+
+        .pill {
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 500;
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .tree-view {
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
+        }
+
+        .tree-view ul {
+            list-style-type: none;
+            padding-left: 20px;
+        }
+
+        .tree-item {
+            margin: 4px 0;
+        }
+
+        .tree-toggle {
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .tree-toggle::before {
+            content: '▶';
+            display: inline-block;
+            margin-right: 6px;
+            font-size: 10px;
+            transition: transform 0.2s;
+        }
+
+        .tree-toggle.open::before {
+            transform: rotate(90deg);
+        }
+
+        .tree-content {
+            display: none;
+            margin-left: 10px;
+        }
+
+        .tree-content.open {
+            display: block;
+        }
+
+        .tree-leaf {
+            margin-left: 16px;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 12px;
+            margin-right: 5px;
+            color: white;
+        }
+
+        .tag-java { background-color: #b07219; }
+        .tag-git { background-color: #F05032; }
+        .tag-pom { background-color: #C71A36; }
+        .tag-markdown { background-color: #083fa1; }
+        .tag-html { background-color: #e34c26; }
+
+        .error-message {
+            background-color: #ffebee;
+            border-left: 5px solid #f44336;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+
+        .success-message {
+            background-color: #e8f5e9;
+            border-left: 5px solid #4caf50;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+
+        .copy-btn {
+            background-color: #f2f2f2;
+            border: none;
+            border-radius: 4px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background-color 0.2s;
+            float: right;
+        }
+
+        .copy-btn:hover {
+            background-color: #e0e0e0;
+        }
+
+        .file-path {
+            font-family: monospace;
+            color: #607d8b;
+            font-size: 13px;
+            margin-bottom: 5px;
+        }
+
+        .method-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .method-card {
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 10px;
+            background-color: #fafafa;
+        }
+
+        .method-name {
+            font-weight: bold;
+            color: #1565c0;
+        }
+
+        .method-return {
+            color: #2e7d32;
+            font-size: 13px;
+        }
+
+        .method-params {
+            margin-top: 5px;
+            font-size: 13px;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stats-card {
+            border-radius: 8px;
+            padding: 15px;
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .stats-number {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .stats-label {
+            color: #757575;
+            font-size: 14px;
+        }
+
+        .timeline {
+            position: relative;
+            margin: 20px 0;
+            padding-left: 30px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            height: 100%;
+            width: 2px;
+            background-color: var(--primary-color);
+            left: 0;
+            top: 0;
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            left: -36px;
+            top: 6px;
+        }
+
+        .timeline-date {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        .timeline-content {
+            padding: 10px;
+            background-color: #f5f5f5;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div class="container">
+        <div class="header-content">
+            <h1>Parser Utility Viewer</h1>
+            <div>
+                <select id="theme-selector">
+                    <option value="light">Light Theme</option>
+                    <option value="dark">Dark Theme</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</header>
+
+<div class="container">
+    <div id="loading" class="loading">
+        <div class="spinner"></div>
+    </div>
+
+    <div id="error-container"></div>
+
+    <div id="content" style="display:none;">
+        <ul class="tabs" id="main-tabs">
+            <li class="active" data-tab="overview">Overview</li>
+            <li data-tab="git">Git Info</li>
+            <li data-tab="java">Java Classes</li>
+            <li data-tab="pom">POM Files</li>
+            <li data-tab="markdown">Markdown Files</li>
+            <li data-tab="html">HTML Files</li>
+            <li data-tab="raw">Raw JSON</li>
+        </ul>
+
+        <div id="overview" class="tab-content active">
+            <div class="card">
+                <h2>Project Summary</h2>
+                <div id="overview-content"></div>
+            </div>
+        </div>
+
+        <div id="git" class="tab-content">
+            <div class="card">
+                <h2>Git Repository Information</h2>
+                <div id="git-content"></div>
+            </div>
+        </div>
+
+        <div id="java" class="tab-content">
+            <div class="filter-container">
+                <input type="text" id="java-search" class="search-input" placeholder="Search Java classes and methods...">
+            </div>
+            <div id="java-content"></div>
+        </div>
+
+        <div id="pom" class="tab-content">
+            <div id="pom-content"></div>
+        </div>
+
+        <div id="markdown" class="tab-content">
+            <div id="markdown-content"></div>
+        </div>
+
+        <div id="html" class="tab-content">
+            <div id="html-content"></div>
+        </div>
+
+        <div id="raw" class="tab-content">
+            <div class="card">
+                <button id="copy-json" class="copy-btn">Copy JSON</button>
+                <h2>Raw JSON Data</h2>
+                <pre id="raw-json"></pre>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Main application
+    const app = {
+        data: null,
+        jsonFiles: [
+            'parser_all.json',
+            'parser_git.json',
+            'parser_java.json',
+            'parser_pom.json',
+            'parser_markdown.json',
+            'parser_html.json'
+        ],
+
+        init: async function() {
+            this.setupEventListeners();
+            await this.loadData();
+            this.renderContent();
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('content').style.display = 'block';
+        },
+
+        setupEventListeners: function() {
+            // Tab switching
+            document.querySelectorAll('.tabs li').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.tabs li').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+
+                    tab.classList.add('active');
+                    document.getElementById(tab.dataset.tab).classList.add('active');
+                });
+            });
+
+            // Theme switching
+            document.getElementById('theme-selector').addEventListener('change', (e) => {
+                if (e.target.value === 'dark') {
+                    document.documentElement.style.setProperty('--background-color', '#1a1a1a');
+                    document.documentElement.style.setProperty('--card-bg', '#2d2d2d');
+                    document.documentElement.style.setProperty('--text-color', '#f0f0f0');
+                    document.documentElement.style.setProperty('--border-color', '#444444');
+                } else {
+                    document.documentElement.style.setProperty('--background-color', '#f8f9fa');
+                    document.documentElement.style.setProperty('--card-bg', '#ffffff');
+                    document.documentElement.style.setProperty('--text-color', '#333333');
+                    document.documentElement.style.setProperty('--border-color', '#e0e0e0');
+                }
+            });
+
+            // Copy JSON button
+            document.getElementById('copy-json').addEventListener('click', () => {
+                const jsonText = JSON.stringify(this.data, null, 2);
+                navigator.clipboard.writeText(jsonText).then(() => {
+                    alert('JSON copied to clipboard!');
+                });
+            });
+
+            // Java search functionality
+            document.getElementById('java-search').addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase();
+                if (this.data && this.data.java) {
+                    this.renderJavaContent(searchTerm);
+                }
+            });
+        },
+
+        loadData: async function() {
+            try {
+                // First try to load parser_all.json
+                let response = await fetch('parser_all.json');
+
+                if (!response.ok) {
+                    // If parser_all.json doesn't exist, try to load individual files
+                    const data = {};
+                    let foundAny = false;
+
+                    for (const file of this.jsonFiles.slice(1)) { // Skip parser_all.json
+                        try {
+                            const resp = await fetch(file);
+                            if (resp.ok) {
+                                const jsonData = await resp.json();
+                                // Extract the type from the filename (e.g., parser_git.json -> git)
+                                const type = file.replace('parser_', '').replace('.json', '');
+                                data[type] = jsonData;
+                                foundAny = true;
+                            }
+                        } catch (err) {
+                            console.warn(`Failed to load ${file}:`, err);
+                        }
+                    }
+
+                    if (!foundAny) {
+                        throw new Error('No parser JSON files found.');
+                    }
+
+                    this.data = data;
+                } else {
+                    // If parser_all.json exists, use it
+                    this.data = await response.json();
+                }
+            } catch (error) {
+                console.error('Error loading data:', error);
+                document.getElementById('error-container').innerHTML = `
+                        <div class="error-message">
+                            <h3>Error Loading Data</h3>
+                            <p>${error.message}</p>
+                            <p>Please ensure that the JSON files are in the same directory as this HTML file.</p>
+                        </div>
+                    `;
+            }
+        },
+
+        renderContent: function() {
+            if (!this.data) return;
+
+            // Render the raw JSON
+            document.getElementById('raw-json').textContent = JSON.stringify(this.data, null, 2);
+
+            // Render the overview
+            this.renderOverview();
+
+            // Render each section if data exists
+            if (this.data.git) this.renderGitContent();
+            if (this.data.java) this.renderJavaContent();
+            if (this.data.pom) this.renderPomContent();
+            if (this.data.markdown) this.renderMarkdownContent();
+            if (this.data.html) this.renderHtmlContent();
+
+            // Setup expandable elements
+            this.setupExpandableElements();
+        },
+
+        renderOverview: function() {
+            let overviewHtml = '<div class="grid-container">';
+
+            // Git stats
+            if (this.data.git) {
+                const git = this.data.git;
+                overviewHtml += `
+                        <div class="stats-card">
+                            <div class="stats-label">Repository</div>
+                            <div class="stats-number">${git.name || 'N/A'}</div>
+                            <div>${git.path || ''}</div>
+                        </div>
+                        <div class="stats-card">
+                            <div class="stats-label">Current Branch</div>
+                            <div class="stats-number">${git.currentBranch || 'N/A'}</div>
+                        </div>
+                        <div class="stats-card">
+                            <div class="stats-label">Commits</div>
+                            <div class="stats-number">${git.commitCount || 0}</div>
+                        </div>
+                        <div class="stats-card">
+                            <div class="stats-label">Contributors</div>
+                            <div class="stats-number">${git.topContributors ? git.topContributors.length : 0}</div>
+                        </div>
+                    `;
+            }
+
+            // Java stats
+            if (this.data.java) {
+                const classCount = Object.keys(this.data.java).length;
+                let methodCount = 0;
+
+                for (const className in this.data.java) {
+                    const classInfo = this.data.java[className];
+                    methodCount += classInfo.methods ? classInfo.methods.length : 0;
+                }
+
+                overviewHtml += `
+                        <div class="stats-card">
+                            <div class="stats-label">Java Classes</div>
+                            <div class="stats-number">${classCount}</div>
+                        </div>
+                        <div class="stats-card">
+                            <div class="stats-label">Java Methods</div>
+                            <div class="stats-number">${methodCount}</div>
+                        </div>
+                    `;
+            }
+
+            // POM stats
+            if (this.data.pom) {
+                let totalDeps = 0;
+
+                for (const pomFile in this.data.pom) {
+                    const pomInfo = this.data.pom[pomFile];
+                    totalDeps += pomInfo.dependencies ? pomInfo.dependencies.length : 0;
+                }
+
+                overviewHtml += `
+                        <div class="stats-card">
+                            <div class="stats-label">POM Files</div>
+                            <div class="stats-number">${Object.keys(this.data.pom).length}</div>
+                        </div>
+                        <div class="stats-card">
+                            <div class="stats-label">Dependencies</div>
+                            <div class="stats-number">${totalDeps}</div>
+                        </div>
+                    `;
+            }
+
+            // Markdown and HTML stats
+            const markdownCount = this.data.markdown ? Object.keys(this.data.markdown).length : 0;
+            const htmlCount = this.data.html ? Object.keys(this.data.html).length : 0;
+
+            overviewHtml += `
+                    <div class="stats-card">
+                        <div class="stats-label">Markdown Files</div>
+                        <div class="stats-number">${markdownCount}</div>
+                    </div>
+                    <div class="stats-card">
+                        <div class="stats-label">HTML Files</div>
+                        <div class="stats-number">${htmlCount}</div>
+                    </div>
+                `;
+
+            overviewHtml += '</div>';
+
+            // File extension distribution if available
+            if (this.data.git && this.data.git.fileExtensionCounts) {
+                overviewHtml += `
+                        <div class="card">
+                            <h3>File Extensions</h3>
+                            <div class="grid-container">
+                    `;
+
+                for (const ext in this.data.git.fileExtensionCounts) {
+                    overviewHtml += `
+                            <div class="stats-card">
+                                <div class="stats-label">${ext || 'No extension'}</div>
+                                <div class="stats-number">${this.data.git.fileExtensionCounts[ext]}</div>
+                            </div>
+                        `;
+                }
+
+                overviewHtml += `
+                            </div>
+                        </div>
+                    `;
+            }
+
+            // Latest commit info if available
+            if (this.data.git && this.data.git.latestCommit) {
+                const commit = this.data.git.latestCommit;
+                const date = new Date(commit.commitDate);
+
+                overviewHtml += `
+                        <div class="card">
+                            <h3>Latest Commit</h3>
+                            <div class="timeline">
+                                <div class="timeline-item">
+                                    <div class="timeline-date">${date.toLocaleString()}</div>
+                                    <div class="timeline-content">
+                                        <p><strong>${commit.message}</strong></p>
+                                        <p>Author: ${commit.authorName} &lt;${commit.authorEmail}&gt;</p>
+                                        <p>Commit ID: ${commit.shortId}</p>
+                                        <p>Changed files: ${commit.changedFiles ? commit.changedFiles.length : 0}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+            }
+
+            document.getElementById('overview-content').innerHTML = overviewHtml;
+        },
+
+        renderGitContent: function() {
+            const git = this.data.git;
+            if (!git) return;
+
+            let gitHtml = '';
+
+            // Repository info
+            gitHtml += `
+                    <div class="card">
+                        <h3>Repository Information</h3>
+                        <table>
+                            <tr>
+                                <td><strong>Name:</strong></td>
+                                <td>${git.name || 'N/A'}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Path:</strong></td>
+                                <td>${git.path || 'N/A'}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Current Branch:</strong></td>
+                                <td>${git.currentBranch || 'N/A'}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Remote URL:</strong></td>
+                                <td>${git.remoteUrl || 'N/A'}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Commit Count:</strong></td>
+                                <td>${git.commitCount || 0}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Creation Date:</strong></td>
+                                <td>${git.creationDate ? new Date(git.creationDate).toLocaleString() : 'N/A'}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Last Updated:</strong></td>
+                                <td>${git.lastUpdatedDate ? new Date(git.lastUpdatedDate).toLocaleString() : 'N/A'}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Uncommitted Changes:</strong></td>
+                                <td>${git.hasUncommittedChanges ? 'Yes' : 'No'}</td>
+                            </tr>
+                        </table>
+                    </div>
+                `;
+
+            // Latest commit
+            if (git.latestCommit) {
+                const commit = git.latestCommit;
+                gitHtml += `
+                        <div class="card">
+                            <h3>Latest Commit</h3>
+                            <table>
+                                <tr>
+                                    <td><strong>ID:</strong></td>
+                                    <td>${commit.id}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Message:</strong></td>
+                                    <td>${commit.message}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Author:</strong></td>
+                                    <td>${commit.authorName} &lt;${commit.authorEmail}&gt;</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Date:</strong></td>
+                                    <td>${new Date(commit.commitDate).toLocaleString()}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    `;
+
+                // Changed files in the latest commit
+                if (commit.changedFiles && commit.changedFiles.length > 0) {
+                    gitHtml += `
+                            <div class="card">
+                                <h3>Changed Files in Latest Commit</h3>
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Path</th>
+                                            <th>Type</th>
+                                            <th>Changes</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                        `;
+
+                    commit.changedFiles.forEach(file => {
+                        gitHtml += `
+                                <tr>
+                                    <td>${file.path}</td>
+                                    <td>${file.type || 'MODIFY'}</td>
+                                    <td>+${file.linesAdded || 0}, -${file.linesDeleted || 0}</td>
+                                </tr>
+                            `;
+                    });
+
+                    gitHtml += `
+                                    </tbody>
+                                </table>
+                            </div>
+                        `;
+                }
+            }
+
+            // Branches
+            if (git.branches && git.branches.length > 0) {
+                gitHtml += `
+                        <div class="card">
+                            <h3>Branches</h3>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Current</th>
+                                        <th>Remote</th>
+                                        <th>Tracking</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                    `;
+
+                git.branches.forEach(branch => {
+                    gitHtml += `
+                            <tr>
+                                <td>${branch.name}</td>
+                                <td>${branch.current ? 'Yes' : 'No'}</td>
+                                <td>${branch.remote ? 'Yes' : 'No'}</td>
+                                <td>${branch.trackingBranch || 'N/A'}</td>
+                            </tr>
+                        `;
+                });
+
+                gitHtml += `
+                                </tbody>
+                            </table>
+                        </div>
+                    `;
+            }
+
+            // Tags
+            if (git.tags && git.tags.length > 0) {
+                gitHtml += `
+                        <div class="card">
+                            <h3>Tags</h3>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Commit ID</th>
+                                        <th>Annotated</th>
+                                        <th>Message</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                    `;
+
+                git.tags.forEach(tag => {
+                    gitHtml += `
+                            <tr>
+                                <td>${tag.name}</td>
+                                <td>${tag.commitId}</td>
+                                <td>${tag.annotated ? 'Yes' : 'No'}</td>
+                                <td>${tag.message || 'N/A'}</td>
+                            </tr>
+                        `;
+                });
+
+                gitHtml += `
+                                </tbody>
+                            </table>
+                        </div>
+                    `;
+            }
+
+            // Contributors
+            if (git.topContributors && git.topContributors.length > 0) {
+                gitHtml += `
+                        <div class="card">
+                            <h3>Top Contributors</h3>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Commits</th>
+                                        <th>Lines Added</th>
+                                        <th>Lines Deleted</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                    `;
+
+                git.topContributors.forEach(contributor => {
+                    gitHtml += `
+                            <tr>
+                                <td>${contributor.name}</td>
+                                <td>${contributor.email}</td>
+                                <td>${contributor.commitCount}</td>
+                                <td>${contributor.linesAdded}</td>
+                                <td>${contributor.linesDeleted}</td>
+                            </tr>
+                        `;
+                });
+
+                gitHtml += `
+                                </tbody>
+                            </table>
+                        </div>
+                    `;
+            }
+
+            document.getElementById('git-content').innerHTML = gitHtml;
+        },
+
+        renderJavaContent: function(searchTerm = '') {
+            const java = this.data.java;
+            if (!java) return;
+
+            let javaHtml = '';
+            let filteredClasses = [];
+
+            // Filter classes based on search term
+            for (const className in java) {
+                const classInfo = java[className];
+
+                // Check if class name or package matches search
+                if (!searchTerm ||
+                    className.toLowerCase().includes(searchTerm) ||
+                    (classInfo.packageName && classInfo.packageName.toLowerCase().includes(searchTerm))) {
+                    filteredClasses.push({className, classInfo});
+                    continue;
+                }
+
+                // Check if any method matches search
+                if (classInfo.methods) {
+                    for (const method of classInfo.methods) {
+                        if (method.name.toLowerCase().includes(searchTerm)) {
+                            filteredClasses.push({className, classInfo});
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // If no classes match, show message
+            if (filteredClasses.length === 0) {
+                javaHtml += `
+                        <div class="card">
+                            <h3>No Java classes match your search.</h3>
+                            <p>Try a different search term.</p>
+                        </div>
+                    `;
+            }
+
+            // Render each class
+            filteredClasses.forEach(({className, classInfo}) => {
+                javaHtml += `
+                        <div class="card">
+                            <div class="section-title">
+                                <h3>${classInfo.name}</h3>
+                                <span class="pill">${classInfo.type || 'class'}</span>
+                            </div>
+                            <div class="file-path">${classInfo.path || className}</div>
+
+                            <p>
+                                ${classInfo.modifiers ? classInfo.modifiers.map(m => `<span class="badge badge-primary">${m}</span>`).join(' ') : ''}
+                                ${classInfo.annotations ? classInfo.annotations.map(a => `<span class="badge badge-warning">@${a}</span>`).join(' ') : ''}
+                            </p>
+
+                            ${classInfo.packageName ? `<p><strong>Package:</strong> ${classInfo.packageName}</p>` : ''}
+                            ${classInfo.superclass ? `<p><strong>Extends:</strong> ${classInfo.superclass}</p>` : ''}
+
+                            ${classInfo.interfaces && classInfo.interfaces.length > 0 ?
+                    `<p><strong>Implements:</strong> ${classInfo.interfaces.join(', ')}</p>` : ''}
+
+                            ${classInfo.javadoc && classInfo.javadoc.description ?
+                    `<div class="card">
+                                    <h4>Description</h4>
+                                    <p>${classInfo.javadoc.description}</p>
+                                </div>` : ''}
+
+                            ${classInfo.fields && classInfo.fields.length > 0 ?
+                    `<div class="expandable">
+                                    <h4>Fields (${classInfo.fields.length})</h4>
+                                    <div class="expandable-content">
+                                        <table>
+                                            <thead>
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>Type</th>
+                                                    <th>Modifiers</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                ${classInfo.fields.map(field => `
+                                                    <tr>
+                                                        <td>${field.name}</td>
+                                                        <td>${field.type}</td>
+                                                        <td>${field.modifiers ? field.modifiers.join(' ') : ''}</td>
+                                                    </tr>
+                                                `).join('')}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>` : ''}
+
+                            ${classInfo.methods && classInfo.methods.length > 0 ?
+                    `<div class="expandable">
+                                    <h4>Methods (${classInfo.methods.length})</h4>
+                                    <div class="expandable-content">
+                                        <div class="method-list">
+                                            ${classInfo.methods.map(method => {
+                        // Highlight method name if it matches search term
+                        const methodNameHighlighted = searchTerm && method.name.toLowerCase().includes(searchTerm.toLowerCase()) ?
+                            `<span style="background-color: yellow;">${method.name}</span>` : method.name;
+
+                        return `
+                                                    <div class="method-card">
+                                                        <div class="method-name">${methodNameHighlighted}</div>
+                                                        <div class="method-return">${method.returnType}</div>
+                                                        <div class="method-params">
+                                                            Parameters: ${method.parameters && method.parameters.length > 0 ?
+                            method.parameters.map(p => `${p.type} ${p.name}`).join(', ') : 'none'}
+                                                        </div>
+                                                        ${method.modifiers ?
+                            `<div>${method.modifiers.map(m => `<span class="badge badge-primary">${m}</span>`).join(' ')}</div>` : ''}
+                                                    </div>
+                                                `;
+                    }).join('')}
+                                        </div>
+                                    </div>
+                                </div>` : ''}
+
+                            ${classInfo.innerClasses && classInfo.innerClasses.length > 0 ?
+                    `<div class="expandable">
+                                    <h4>Inner Classes (${classInfo.innerClasses.length})</h4>
+                                    <div class="expandable-content">
+                                        <ul>
+                                            ${classInfo.innerClasses.map(innerClass =>
+                        `<li>${innerClass.name} (${innerClass.type || 'class'})</li>`
+                    ).join('')}
+                                        </ul>
+                                    </div>
+                                </div>` : ''}
+                        </div>
+                    `;
+            });
+
+            document.getElementById('java-content').innerHTML = javaHtml;
+
+            // Setup expandable elements for newly added content
+            this.setupExpandableElements();
+        },
+
+        renderPomContent: function() {
+            const pom = this.data.pom;
+            if (!pom) return;
+
+            let pomHtml = '';
+
+            for (const pomFile in pom) {
+                const pomInfo = pom[pomFile];
+
+                pomHtml += `
+                        <div class="card">
+                            <h3>${pomFile}</h3>
+
+                            ${pomInfo.coordinates ?
+                    `<div class="section-title">
+                                    <h4>Coordinates</h4>
+                                </div>
+                                <table>
+                                    <tr>
+                                        <td><strong>Group ID:</strong></td>
+                                        <td>${pomInfo.coordinates.groupId || 'N/A'}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Artifact ID:</strong></td>
+                                        <td>${pomInfo.coordinates.artifactId || 'N/A'}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Version:</strong></td>
+                                        <td>${pomInfo.coordinates.version || 'N/A'}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Packaging:</strong></td>
+                                        <td>${pomInfo.coordinates.packaging || 'jar'}</td>
+                                    </tr>
+                                </table>` : ''}
+
+                            ${pomInfo.name ? `<p><strong>Name:</strong> ${pomInfo.name}</p>` : ''}
+                            ${pomInfo.description ? `<p><strong>Description:</strong> ${pomInfo.description}</p>` : ''}
+                            ${pomInfo.url ? `<p><strong>URL:</strong> ${pomInfo.url}</p>` : ''}
+
+                            ${pomInfo.parent ?
+                    `<div class="expandable">
+                                    <h4>Parent POM</h4>
+                                    <div class="expandable-content">
+                                        <table>
+                                            <tr>
+                                                <td><strong>Group ID:</strong></td>
+                                                <td>${pomInfo.parent.groupId || 'N/A'}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Artifact ID:</strong></td>
+                                                <td>${pomInfo.parent.artifactId || 'N/A'}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Version:</strong></td>
+                                                <td>${pomInfo.parent.version || 'N/A'}</td>
+                                            </tr>
+                                            ${pomInfo.parent.relativePath ?
+                        `<tr>
+                                                    <td><strong>Relative Path:</strong></td>
+                                                    <td>${pomInfo.parent.relativePath}</td>
+                                                </tr>` : ''}
+                                        </table>
+                                    </div>
+                                </div>` : ''}
+
+                            ${pomInfo.dependencies && pomInfo.dependencies.length > 0 ?
+                    `<div class="expandable">
+                                    <h4>Dependencies (${pomInfo.dependencies.length})</h4>
+                                    <div class="expandable-content">
+                                        <table>
+                                            <thead>
+                                                <tr>
+                                                    <th>Group ID</th>
+                                                    <th>Artifact ID</th>
+                                                    <th>Version</th>
+                                                    <th>Scope</th>
+                                                    <th>Optional</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                ${pomInfo.dependencies.map(dep => `
+                                                    <tr>
+                                                        <td>${dep.groupId}</td>
+                                                        <td>${dep.artifactId}</td>
+                                                        <td>${dep.version || 'N/A'}</td>
+                                                        <td>${dep.scope || 'compile'}</td>
+                                                        <td>${dep.optional ? 'Yes' : 'No'}</td>
+                                                    </tr>
+                                                `).join('')}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>` : ''}
+
+                            ${pomInfo.plugins && pomInfo.plugins.length > 0 ?
+                    `<div class="expandable">
+                                    <h4>Plugins (${pomInfo.plugins.length})</h4>
+                                    <div class="expandable-content">
+                                        <table>
+                                            <thead>
+                                                <tr>
+                                                    <th>Group ID</th>
+                                                    <th>Artifact ID</th>
+                                                    <th>Version</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                ${pomInfo.plugins.map(plugin => `
+                                                    <tr>
+                                                        <td>${plugin.groupId || 'org.apache.maven.plugins'}</td>
+                                                        <td>${plugin.artifactId}</td>
+                                                        <td>${plugin.version || 'N/A'}</td>
+                                                    </tr>
+                                                `).join('')}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>` : ''}
+
+                            ${pomInfo.properties && pomInfo.properties.length > 0 ?
+                    `<div class="expandable">
+                                    <h4>Properties (${pomInfo.properties.length})</h4>
+                                    <div class="expandable-content">
+                                        <table>
+                                            <thead>
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>Value</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                ${pomInfo.properties.map(prop => `
+                                                    <tr>
+                                                        <td>${prop.name}</td>
+                                                        <td>${prop.value}</td>
+                                                    </tr>
+                                                `).join('')}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>` : ''}
+
+                            ${pomInfo.modules && pomInfo.modules.length > 0 ?
+                    `<div class="expandable">
+                                    <h4>Modules (${pomInfo.modules.length})</h4>
+                                    <div class="expandable-content">
+                                        <ul>
+                                            ${pomInfo.modules.map(module => `<li>${module}</li>`).join('')}
+                                        </ul>
+                                    </div>
+                                </div>` : ''}
+                        </div>
+                    `;
+            }
+
+            document.getElementById('pom-content').innerHTML = pomHtml;
+
+            // Setup expandable elements for newly added content
+            this.setupExpandableElements();
+        },
+
+        renderMarkdownContent: function() {
+            const markdown = this.data.markdown;
+            if (!markdown) return;
+
+            let markdownHtml = '';
+
+            for (const mdFile in markdown) {
+                const mdInfo = markdown[mdFile];
+
+                markdownHtml += `
+                        <div class="card">
+                            <h3>${mdFile}</h3>
+
+                            ${mdInfo.headings && mdInfo.headings.length > 0 ?
+                    `<div class="expandable">
+                                    <h4>Headings (${mdInfo.headings.length})</h4>
+                                    <div class="expandable-content">
+                                        <ul>
+                                            ${mdInfo.headings.map(heading =>
+                        `<li style="margin-left: ${(heading.level - 1) * 20}px">
+                                                    ${heading.text} <span class="badge badge-primary">h${heading.level}</span>
+                                                </li>`
+                    ).join('')}
+                                        </ul>
+                                    </div>
+                                </div>` : ''}
+
+                            ${mdInfo.links && mdInfo.links.length > 0 ?
+                    `<div class="expandable">
+                                    <h4>Links (${mdInfo.links.length})</h4>
+                                    <div class="expandable-content">
+                                        <table>
+                                            <thead>
+                                                <tr>
+                                                    <th>Text</th>
+                                                    <th>URL</th>
+                                                    <th>Title</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                ${mdInfo.links.map(link => `
+                                                    <tr>
+                                                        <td>${link.text}</td>
+                                                        <td>${link.url}</td>
+                                                        <td>${link.title || ''}</td>
+                                                    </tr>
+                                                `).join('')}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>` : ''}
+
+                            ${mdInfo.images && mdInfo.images.length > 0 ?
+                    `<div class="expandable">
+                                    <h4>Images (${mdInfo.images.length})</h4>
+                                    <div class="expandable-content">
+                                        <table>
+                                            <thead>
+                                                <tr>
+                                                    <th>Alt Text</th>
+                                                    <th>URL</th>
+                                                    <th>Title</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                ${mdInfo.images.map(image => `
+                                                    <tr>
+                                                        <td>${image.altText}</td>
+                                                        <td>${image.url}</td>
+                                                        <td>${image.title || ''}</td>
+                                                    </tr>
+                                                `).join('')}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>` : ''}
+
+                            ${mdInfo.codeBlocks && mdInfo.codeBlocks.length > 0 ?
+                    `<div class="expandable">
+                                    <h4>Code Blocks (${mdInfo.codeBlocks.length})</h4>
+                                    <div class="expandable-content">
+                                        ${mdInfo.codeBlocks.map((code, idx) => `
+                                            <div>
+                                                <p><strong>Language: </strong> ${code.language || 'none'}</p>
+                                                <pre><code>${code.code}</code></pre>
+                                            </div>
+                                            ${idx < mdInfo.codeBlocks.length - 1 ? '<hr>' : ''}
+                                        `).join('')}
+                                    </div>
+                                </div>` : ''}
+
+                            ${mdInfo.plainText ?
+                    `<div class="expandable">
+                                    <h4>Content Preview</h4>
+                                    <div class="expandable-content">
+                                        <pre>${mdInfo.plainText.substring(0, 500)}${mdInfo.plainText.length > 500 ? '...' : ''}</pre>
+                                    </div>
+                                </div>` : ''}
+                        </div>
+                    `;
+            }
+
+            document.getElementById('markdown-content').innerHTML = markdownHtml;
+
+            // Setup expandable elements for newly added content
+            this.setupExpandableElements();
+        },
+
+        renderHtmlContent: function() {
+            const html = this.data.html;
+            if (!html) return;
+
+            let htmlContentOutput = '';
+
+            for (const htmlFile in html) {
+                const htmlInfo = html[htmlFile];
+
+                htmlContentOutput += `
+                        <div class="card">
+                            <h3>${htmlFile}</h3>
+                            <p><strong>Title:</strong> ${htmlInfo.title || 'No title'}</p>
+
+                            ${htmlInfo.headings && htmlInfo.headings.length > 0 ?
+                    `<div class="expandable">
+                                    <h4>Headings (${htmlInfo.headings.length})</h4>
+                                    <div class="expandable-content">
+                                        <ul>
+                                            ${htmlInfo.headings.map(heading =>
+                        `<li style="margin-left: ${(heading.level - 1) * 20}px">
+                                                    ${heading.text} <span class="badge badge-primary">h${heading.level}</span>
+                                                </li>`
+                    ).join('')}
+                                        </ul>
+                                    </div>
+                                </div>` : ''}
+
+                            ${htmlInfo.links && htmlInfo.links.length > 0 ?
+                    `<div class="expandable">
+                                    <h4>Links (${htmlInfo.links.length})</h4>
+                                    <div class="expandable-content">
+                                        <table>
+                                            <thead>
+                                                <tr>
+                                                    <th>Text</th>
+                                                    <th>HREF</th>
+                                                    <th>Rel</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                ${htmlInfo.links.map(link => `
+                                                    <tr>
+                                                        <td>${link.text}</td>
+                                                        <td>${link.href}</td>
+                                                        <td>${link.rel || ''}</td>
+                                                    </tr>
+                                                `).join('')}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>` : ''}
+
+                            ${htmlInfo.images && htmlInfo.images.length > 0 ?
+                    `<div class="expandable">
+                                    <h4>Images (${htmlInfo.images.length})</h4>
+                                    <div class="expandable-content">
+                                        <table>
+                                            <thead>
+                                                <tr>
+                                                    <th>Source</th>
+                                                    <th>Alt</th>
+                                                    <th>Dimensions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                ${htmlInfo.images.map(image => `
+                                                    <tr>
+                                                        <td>${image.src}</td>
+                                                        <td>${image.alt || ''}</td>
+                                                        <td>${image.width || '?'}×${image.height || '?'}</td>
+                                                    </tr>
+                                                `).join('')}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>` : ''}
+
+                            ${htmlInfo.metadata && Object.keys(htmlInfo.metadata).length > 0 ?
+                    `<div class="expandable">
+                                    <h4>Metadata</h4>
+                                    <div class="expandable-content">
+                                        <table>
+                                            <thead>
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>Value</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                ${Object.entries(htmlInfo.metadata).map(([key, value]) => `
+                                                    <tr>
+                                                        <td>${key}</td>
+                                                        <td>${value}</td>
+                                                    </tr>
+                                                `).join('')}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>` : ''}
+                        </div>
+                    `;
+            }
+
+            document.getElementById('html-content').innerHTML = htmlContentOutput;
+
+            // Setup expandable elements for newly added content
+            this.setupExpandableElements();
+        },
+
+        setupExpandableElements: function() {
+            document.querySelectorAll('.expandable').forEach(expandable => {
+                // Skip if already initialized
+                if (expandable.dataset.initialized) return;
+
+                const content = expandable.querySelector('.expandable-content');
+
+                expandable.addEventListener('click', function() {
+                    if (content.style.display === 'block') {
+                        content.style.display = 'none';
+                    } else {
+                        content.style.display = 'block';
+                    }
+                });
+
+                expandable.dataset.initialized = true;
+            });
+
+            // Prevent clicks on content from toggling
+            document.querySelectorAll('.expandable-content').forEach(content => {
+                content.addEventListener('click', e => {
+                    e.stopPropagation();
+                });
+            });
+        }
+    };
+
+    // Initialize the application when DOM is ready
+    document.addEventListener('DOMContentLoaded', () => {
+        app.init();
+    });
+</script>
+</body>
+</html>

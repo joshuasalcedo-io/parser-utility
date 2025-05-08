@@ -1,7 +1,5 @@
 package io.joshuasalcedo;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import io.joshuasalcedo.parsers.Parser;
 import io.joshuasalcedo.utility.FileUtils;
 import io.joshuasalcedo.utility.JsonUtils;
@@ -9,7 +7,6 @@ import io.joshuasalcedo.utility.console.ConsoleFormatterFactory;
 import io.joshuasalcedo.utility.console.MessageType;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -77,6 +74,29 @@ public class ParserRunner {
     }
 
     /**
+     * Resolves a path to an absolute path, handling special cases
+     *
+     * @param path The path to resolve
+     * @return The resolved absolute path
+     */
+    private static String resolvePath(String path) {
+        // Handle special cases for paths
+        if (path.equals(".")) {
+            // Current directory
+            return System.getProperty("user.dir");
+        } else if (path.startsWith("./") || path.startsWith(".\\")) {
+            // Relative path starting with ./
+            return new File(System.getProperty("user.dir"), path.substring(2)).getAbsolutePath();
+        } else if (!new File(path).isAbsolute()) {
+            // Any other relative path
+            return new File(System.getProperty("user.dir"), path).getAbsolutePath();
+        }
+
+        // Already an absolute path
+        return path;
+    }
+
+    /**
      * Handles parser commands that require a directory path
      *
      * @param command The command to execute
@@ -88,7 +108,11 @@ public class ParserRunner {
             return;
         }
 
-        String directory = args[1];
+        String directory = resolvePath(args[1]);
+
+        // Log the resolved directory path for debugging
+        printInfo("Resolved directory path: " + directory);
+
         executeParser(command, directory);
     }
 
@@ -134,7 +158,7 @@ public class ParserRunner {
      * @return true if directory is valid, false otherwise
      */
     private static boolean validateDirectory(File directory) {
-        if (!FileUtils.isFileReadable(directory) || !directory.isDirectory()) {
+        if (!directory.exists() || !directory.isDirectory() || !directory.canRead()) {
             printError("Directory does not exist or is not readable: " + directory);
             return false;
         }
@@ -147,6 +171,12 @@ public class ParserRunner {
      * @param filePath Path to the file
      */
     private static void parseFile(String filePath) {
+        // Resolve the file path
+        filePath = resolvePath(filePath);
+
+        // Log the resolved file path for debugging
+        printInfo("Resolved file path: " + filePath);
+
         File file = new File(filePath);
         if (!FileUtils.isFileReadable(file)) {
             printError("File does not exist or is not readable: " + filePath);
