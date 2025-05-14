@@ -211,6 +211,7 @@
                 <artifactId>maven-site-plugin</artifactId>
                 <version>3.12.1</version>
                 <configuration>
+                    <!-- This prevents the standard deployment mechanism that doesn't work -->
                     <skipDeploy>true</skipDeploy>
                 </configuration>
                 <dependencies>
@@ -222,23 +223,39 @@
                 </dependencies>
             </plugin>
 
-            <!-- GitHub Site Plugin -->
+            <!-- SCM Publish Plugin -->
             <plugin>
-                <groupId>com.github.github</groupId>
-                <artifactId>site-maven-plugin</artifactId>
-                <version>0.12</version>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-scm-publish-plugin</artifactId>
+                <version>3.1.0</version>
                 <configuration>
-                    <message>Creating site for ${project.version}</message>
-                    <server>github</server>
-                    <path>wiki</path>
-                    <merge>true</merge>
+                    <!-- Specify the content to publish -->
+                    <content>${project.build.directory}/site</content>
+                    <!-- Use a direct, explicit URL for the wiki repository -->
+                    <pubScmUrl>scm:git:https://github.com/joshuasalcedo-io/parser-utility.wiki.git</pubScmUrl>
+                    <!-- The wiki typically uses 'master' as the main branch -->
+                    <scmBranch>master</scmBranch>
+                    <!-- Local directory for checkout -->
+                    <checkoutDirectory>${project.build.directory}/scmpublish-checkout-wiki</checkoutDirectory>
+                    <!-- Try to update existing content -->
+                    <tryUpdate>true</tryUpdate>
+                    <!-- Preserve existing files in the wiki -->
+                    <ignorePathsToDelete>
+                        <ignorePathToDelete>**/*</ignorePathToDelete>
+                    </ignorePathsToDelete>
+                    <!-- Skip the SCM validation check, as wiki repo might not exist initially -->
+                    <skipCheckin>false</skipCheckin>
+                    <skipDeletedFiles>true</skipDeletedFiles>
+                    <!-- For commit messages -->
+
                 </configuration>
                 <executions>
                     <execution>
-                        <goals>
-                            <goal>site</goal>
-                        </goals>
+                        <id>scm-publish</id>
                         <phase>site-deploy</phase>
+                        <goals>
+                            <goal>publish-scm</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>
@@ -327,15 +344,11 @@
         </profile>
     </profiles>
 
-    <!-- Main distribution management section -->
     <distributionManagement>
         <site>
-            <id>github</id>
+            <id>github-wiki</id>
             <name>GitHub Wiki</name>
-            <url>scp://github.com/joshuasalcedo-io/parser-utility/wiki</url>
+            <url>https://github.com/joshuasalcedo-io/parser-utility/wiki</url>
         </site>
     </distributionManagement>
-
-
-
 </project>

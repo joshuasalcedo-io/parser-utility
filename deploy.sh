@@ -75,11 +75,11 @@ echo
 if [[ $REPLY =~ ^[Yy]$ ]]; then
     # Deploy to GitHub Packages
     echo -e "\n${YELLOW}Deploying to GitHub Packages...${NC}"
-    mvn deploy -P github
+    mvn deploy -P github,!ossrh
 
     # Deploy to Custom Nexus
     echo -e "\n${YELLOW}Deploying to Custom Nexus Repository...${NC}"
-    mvn deploy -P nexus
+    mvn deploy -P nexus,!ossrh
 #
 #    # Deploy to Maven Central (requires GPG signing)
 #    echo -e "\n${YELLOW}Deploying to Maven Central...${NC}"
@@ -110,8 +110,8 @@ mvn dependency:tree -P !ossrh
 
 # Run various project info reports
 echo -e "\n${YELLOW}Step 13: Generating project info reports${NC}"
-mvn project-info-reports:dependencies
-mvn javadoc:javadoc
+mvn project-info-reports:dependencies -P !ossrh
+mvn javadoc:javadoc -P !ossrh
 
 echo -e "\n${GREEN}=========================================================${NC}"
 echo -e "${GREEN}   Build and deployment process completed                ${NC}"
